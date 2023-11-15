@@ -1,9 +1,11 @@
 package controllers
 
 import models.Customer
+import persistence.Serializer
 
-class CustomerAPI {
+class CustomerAPI(serializerType: Serializer) {
 
+    private var serializer: Serializer = serializerType
     private var customers = ArrayList<Customer>()
 
     // CRUD
