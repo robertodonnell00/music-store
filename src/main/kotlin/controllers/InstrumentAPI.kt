@@ -2,8 +2,10 @@ package controllers
 
 import models.Customer
 import models.Instrument
+import persistence.Serializer
 
-class InstrumentAPI {
+class InstrumentAPI(serializerType: Serializer) {
+    private var serializer: Serializer = serializerType
     private var instruments = ArrayList<Instrument>()
 
     // CRUD
