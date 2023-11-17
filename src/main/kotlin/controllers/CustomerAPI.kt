@@ -10,7 +10,7 @@ class CustomerAPI(serializerType: Serializer) {
 
     // CRUD
     //CREATE
-    fun add(customer: Customer): Boolean {
+    fun create(customer: Customer): Boolean {
         return customers.add(customer)
     }
 
@@ -25,6 +25,10 @@ class CustomerAPI(serializerType: Serializer) {
         return (index >= 0 && index < list.size)
     }
 
+    fun isValidIndex(index: Int): Boolean {
+        return isValidListIndex(index, customers)
+    }
+
     fun listAllCustomers(): String =
         if (customers.isEmpty()) "No customers are stored"
         else formatListString(customers)
@@ -33,6 +37,10 @@ class CustomerAPI(serializerType: Serializer) {
         return if(isValidListIndex(index, customers)){
             customers[index]
         } else null
+    }
+
+    fun numberOfCustomers(): Int {
+        return customers.size
     }
 
     //UPDATE
