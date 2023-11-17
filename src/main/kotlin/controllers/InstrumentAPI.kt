@@ -26,6 +26,10 @@ class InstrumentAPI(serializerType: Serializer) {
         return (index >= 0 && index < list.size)
     }
 
+    fun isValidIndex(index: Int): Boolean {
+        return isValidListIndex(index, instruments)
+    }
+
     fun listAllInstruments(): String=
         if(instruments.isEmpty()) "No instruments are stored"
         else formatListString(instruments)
@@ -36,6 +40,13 @@ class InstrumentAPI(serializerType: Serializer) {
             instruments[index]
         } else null
     }
+
+
+    fun numberOfInstruments(): Int {
+        return instruments.size
+    }
+
+    //UPDATE
 
 
     fun updateInstrument(indexToUpdate: Int, instrument: Instrument?): Boolean {
@@ -57,6 +68,13 @@ class InstrumentAPI(serializerType: Serializer) {
         return false
     }
 
+    //DELETE
+
+    fun deleteInstrument(indexToDelete: Int): Instrument? {
+        return if(isValidListIndex(indexToDelete, instruments)){
+            instruments.removeAt(indexToDelete)
+        } else null
+    }
 
     @Throws(Exception::class)
     fun store() {

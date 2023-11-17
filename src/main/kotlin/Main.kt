@@ -262,7 +262,7 @@ fun main(args: Array<String>) {
     }
 
 fun exitApp(){
-    save()
+   // save()
     logger.info { "exitApp() function invoked" }
     exit(0)
 }
@@ -327,5 +327,85 @@ fun addInstrument() {
         println("Added Successfully")
     } else {
         println("Add Failed")
+    }
+}
+
+//READ
+
+fun listAllCustomers() {
+    println(customerAPI.listAllCustomers())
+}
+
+fun listAllInstruments() {
+    println(instrumentAPI.listAllInstruments())
+}
+
+
+
+
+
+//UPDATE
+fun updateCustomer() {
+    listAllCustomers()
+    if(customerAPI.numberOfCustomers() > 0) {
+        //only ask the user to choose the customer if it exists
+        val indexToUpdate = readNextInt("Enter the index of the Customer you wish to update: ")
+        if(customerAPI.isValidIndex(indexToUpdate)){
+            val customerID = readNextLine("Enter customer ID: ")
+            val customerName = readNextLine("Enter customer name: ")
+            val customerAddress = readNextLine("Enter customer address: ")
+            val itemsBought = readNextLine("Enter ID of items bought by customer: ")
+            println("Is customer VIP? (true/false)")
+            val customerVIP = readLine()!!.toBoolean()
+            val preferredInstrument = readNextLine("Enter the customer's preferred Instrument type: ")
+
+            if (customerAPI.updateCustomer(indexToUpdate, Customer(customerID,customerName,customerAddress,itemsBought,customerVIP,preferredInstrument))){
+                println("Update Successful")
+            } else {
+                println("Update Failed")
+                }
+            } else {
+                println("There are no notes of that index number")
+            }
+        }
+    }
+
+fun updateInstrument() {
+    listAllInstruments()
+    if(instrumentAPI.numberOfInstruments() > 0) {
+        //only ask the user to choose the instrument if it exists
+        val indexToUpdate = readNextInt("Enter index of instrument to update: ")
+        if(instrumentAPI.isValidIndex(indexToUpdate)) {
+            val instrumentID = readNextLine("Enter the instrument ID: ")
+            val instrumentType = readNextLine("Enter the instrument type: ")
+            val price = readNextDouble("Enter the price of instrument: ")
+            val quantityBought = readNextInt("Enter the quantity ordered: ")
+            println("Has the instrument been paid for? ")
+            val isPaidFor = readLine()!!.toBoolean()
+            val instrumentReview = readNextInt("Enter review out of 100: ")
+            val dateReceived = readNextLine("Enter date the customer received instrument: ")
+            val customerBought = readNextLine("Enter the ID of customer who bought instrument: ")
+
+            if (instrumentAPI.updateInstrument(
+                    indexToUpdate,
+                    Instrument(
+                        instrumentID,
+                        instrumentType,
+                        price,
+                        quantityBought,
+                        isPaidFor,
+                        instrumentReview,
+                        dateReceived,
+                        customerBought
+                    )
+                )
+            ) {
+                println("Update Successful")
+            } else {
+                println("Update Failed")
+            }
+         } else {
+            println("There are no instruments of this index number")
+         }
     }
 }
