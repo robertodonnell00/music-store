@@ -6,6 +6,7 @@ import mu.KotlinLogging
 import persistence.JSONSerializer
 import persistence.XMLSerializer
 import utils.ScannerInput
+import utils.ScannerInput.readNextDouble
 import utils.ScannerInput.readNextInt
 import utils.ScannerInput.readNextLine
 import java.io.File
@@ -283,5 +284,48 @@ fun load() {
         instrumentAPI.load()
     } catch (e: Exception) {
         System.err.println("Error reading from file: $e")
+    }
+}
+
+
+
+//CRUD
+//CREATE
+
+fun addCustomer() {
+    val customerID = readNextLine("Enter Customer ID: ")
+    val customerName = readNextLine("Enter Customer Name: ")
+    val customerAddress = readNextLine("Enter Customer Address: ")
+    val itemsBought = readNextLine("Enter ID of items bought: ")
+    println("Enter Customer VIP Status (true/false): ")
+    val vipCustomer = readLine()!!.toBoolean()
+    val preferredInstrument = readNextLine("Enter preferred type of Instrument: ")
+
+    val isAdded = customerAPI.create(Customer(customerID,customerName,customerAddress,itemsBought,vipCustomer, preferredInstrument))
+
+    if (isAdded) {
+        println("Added Successfully")
+    } else {
+        println("Add Failed")
+    }
+}
+
+fun addInstrument() {
+    val instrumentID = readNextLine("Enter Instrument ID: ")
+    val instrumentType = readNextLine("Enter the Type of Instrument: ")
+    val price = readNextDouble("Enter the price of the instrument: ")
+    val quantityBought = readNextInt("Enter the quantity of instruments the customer bought: ")
+    println("Did the customer pay for instrument: ")
+    val isPaidFor = readLine()!!.toBoolean()
+    val instrumentReview = readNextInt("Enter the review for instrument: ")
+    val dateReceived = readNextLine("Enter the date the customer received instrument: ")
+    val customerBought = readNextLine("Enter the ID of the customer who bought this instrument: ")
+
+    val isAdded = instrumentAPI.add(Instrument(instrumentID,instrumentType,price,quantityBought, isPaidFor,instrumentReview,dateReceived,customerBought))
+
+    if (isAdded) {
+        println("Added Successfully")
+    } else {
+        println("Add Failed")
     }
 }

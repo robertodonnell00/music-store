@@ -4,7 +4,7 @@ class Customer(
     var customerID: String,
     var customerName: String,
     var customerAddress: String,
-    var itemsBought: Instrument,
+    var itemsBought: String,
     var vipCustomer: Boolean,
     var preferredInstrument: String)  {
     override fun toString(): String {

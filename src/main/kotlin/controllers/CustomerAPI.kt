@@ -10,7 +10,7 @@ class CustomerAPI(serializerType: Serializer) {
 
     // CRUD
     //CREATE
-    fun add(customer: Customer): Boolean {
+    fun create(customer: Customer): Boolean {
         return customers.add(customer)
     }
 
