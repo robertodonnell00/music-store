@@ -58,4 +58,14 @@ class CustomerAPI(serializerType: Serializer) {
         customers.removeAt(indexDelete)
         } else null
     }
+
+    @Throws(Exception::class)
+    fun store() {
+        serializer.write(customers)
+    }
+
+    @Throws(Exception::class)
+    fun load() {
+        customers = serializer.read() as ArrayList<Customer>
+    }
 }

@@ -58,4 +58,14 @@ class InstrumentAPI(serializerType: Serializer) {
     }
 
 
+    @Throws(Exception::class)
+    fun store() {
+        serializer.write(instruments)
+    }
+
+    @Throws(Exception::class)
+    fun load() {
+        instruments = serializer.read() as ArrayList<Instrument>
+    }
+
 }
