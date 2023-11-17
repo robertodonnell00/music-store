@@ -409,3 +409,28 @@ fun updateInstrument() {
          }
     }
 }
+
+
+//DELETE
+
+fun deleteCustomer(){
+    listAllCustomers()
+    if(customerAPI.numberOfCustomers() > 0) {
+        //only ask user to choose customer to be deleted if it exists
+        val indexToDelete = readNextInt("Enter the index of the customer you wish to delete: ")
+        //pass index of customer to controller for deleting and check for success
+        val customerToDelete = customerAPI.deleteCustomer(indexToDelete)
+
+        println("Delete Successful! Customer deleted : ${customerToDelete!!.customerName}")
+    }
+}
+
+fun deleteInstrument() {
+    listAllInstruments()
+    if (instrumentAPI.numberOfInstruments() > 0) {
+        val indexToDelete = readNextInt("Enter the index of the instrument you wish to delete: ")
+        val instrumentToDelete = instrumentAPI.deleteInstrument(indexToDelete)
+
+        println("Delete Successful! Instrument deleted : ${instrumentToDelete!!.instrumentID}")
+    }
+}
