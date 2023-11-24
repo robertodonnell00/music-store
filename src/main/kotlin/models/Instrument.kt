@@ -10,9 +10,9 @@ class Instrument(
     var isPaidFor: Boolean = true,
     var instrumentReview: Int, // x out of 10
     var dateReceived: String,
-    var customerBoughtID: Customer
+    var customerBoughtID: Int
 ) {
     override fun toString(): String {
-        return "Note(instrumentID='$instrumentID', instrumentType=$instrumentType, price='$price', qauntityBought=$qauntityBought, isPaidFor= $isPaidFor, instrumentReview= $instrumentReview, dateReceived= $dateReceived, customerBought= $customerBoughtID)"
+        return "Customer(instrumentID='$instrumentID', instrumentType=$instrumentType, price='$price', qauntityBought=$qauntityBought, isPaidFor= $isPaidFor, instrumentReview= $instrumentReview, dateReceived= $dateReceived, customerBought= $customerBoughtID)"
     }
 }

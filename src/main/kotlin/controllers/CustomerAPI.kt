@@ -33,13 +33,14 @@ class CustomerAPI(serializerType: Serializer) {
         if (customers.isEmpty()) "No customers are stored"
         else formatListString(customers)
 
-    fun listAllInstruments(): Any =
-        if(customers.isEmpty()) "No instruments are stored"
+    fun listAllInstruments(): String =
+        if(customers.isEmpty()) "No customers are stored"
         else {
             var instruments = ""
             for (customer in customers){
-                instruments += customer.customerName + ": " + customer.itemsBought
+                instruments += "${customer.customerName}: + ${customer.itemsBought}\n"
             }
+            instruments
         }
 
     fun findCustomer(index: Int): Customer? {
@@ -55,6 +56,11 @@ class CustomerAPI(serializerType: Serializer) {
     fun getCustomer(index: Int): Customer {
         return customers[index]
     }
+
+    fun searchByName(searchString: String)=
+        formatListString(
+            customers.filter { customer -> customer.customerName.contains(searchString, ignoreCase = true) }
+        )
 
     //UPDATE
     fun updateCustomer(indexToUpdate: Int, customer: Customer?): Boolean {

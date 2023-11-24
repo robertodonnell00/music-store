@@ -343,9 +343,9 @@ fun addInstrumentToCustomer() {
         val dateReceived = readNextLine("Enter the date the customer received instrument: ")
         listAllCustomers()
         val customerIndex = readNextInt("Enter the index of the customer who bought this instrument: ")
-        val customerBought = customerAPI.getCustomer(customerIndex)
+        val customerBoughtID = readNextInt("Enter the id of customer who bought this instrument")
 
-        val isAdded = customer.create(Instrument(instrumentID,instrumentType,price,quantityBought, isPaidFor,instrumentReview,dateReceived,customerBought))
+        val isAdded = customer.create(Instrument(instrumentID,instrumentType,price,quantityBought, isPaidFor,instrumentReview,dateReceived, customerBoughtID))
         if (isAdded) {
             println("Added Successfully")
         } else {
@@ -413,7 +413,7 @@ fun updateInstrument() {
 
             if(customer.updateInstrument(instrument.instrumentID, Instrument(
                         instrumentID, instrumentType, price, quantityBought,
-                        isPaidFor, instrumentReview, dateReceived, customer
+                        isPaidFor, instrumentReview, dateReceived, customer.customerID
                 )))
                     println("Instrument details updated")
                     else println("Invalid Instrument ID")
