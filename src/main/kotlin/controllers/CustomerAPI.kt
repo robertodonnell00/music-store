@@ -33,6 +33,15 @@ class CustomerAPI(serializerType: Serializer) {
         if (customers.isEmpty()) "No customers are stored"
         else formatListString(customers)
 
+    fun listAllInstruments(): Any =
+        if(customers.isEmpty()) "No instruments are stored"
+        else {
+            var instruments = ""
+            for (customer in customers){
+                instruments += customer.customerName + ": " + customer.itemsBought
+            }
+        }
+
     fun findCustomer(index: Int): Customer? {
         return if(isValidListIndex(index, customers)){
             customers[index]
@@ -41,6 +50,10 @@ class CustomerAPI(serializerType: Serializer) {
 
     fun numberOfCustomers(): Int {
         return customers.size
+    }
+
+    fun getCustomer(index: Int): Customer {
+        return customers[index]
     }
 
     //UPDATE
@@ -53,8 +66,10 @@ class CustomerAPI(serializerType: Serializer) {
             foundCustomer.customerAddress = customer.customerAddress
             foundCustomer.customerName = customer.customerName
             foundCustomer.vipCustomer = customer.vipCustomer
-            foundCustomer.itemsBought = customer.itemsBought
             foundCustomer.preferredInstrument = customer.preferredInstrument
+            if(!customer.itemsBought.isEmpty()){
+                foundCustomer.itemsBought = customer.itemsBought
+            }
             return true
         }
         return false
