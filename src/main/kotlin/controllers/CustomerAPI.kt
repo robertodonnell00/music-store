@@ -1,6 +1,7 @@
 package controllers
 
 import models.Customer
+import models.Instrument
 import persistence.Serializer
 
 class CustomerAPI(serializerType: Serializer) {
@@ -43,6 +44,15 @@ class CustomerAPI(serializerType: Serializer) {
             instruments
         }
 
+    fun listVIPCustomers(): String =
+        if(customers.isEmpty()) "No customers are stored"
+        else formatListString(
+            customers.filter { customer -> customer.vipCustomer == true }
+        )
+
+
+
+
     fun findCustomer(index: Int): Customer? {
         return if(isValidListIndex(index, customers)){
             customers[index]
@@ -60,6 +70,26 @@ class CustomerAPI(serializerType: Serializer) {
     fun searchByName(searchString: String)=
         formatListString(
             customers.filter { customer -> customer.customerName.contains(searchString, ignoreCase = true) }
+        )
+
+    fun searchByAddress(searchString: String)=
+        formatListString(
+            customers.filter { customer -> customer.customerAddress.contains(searchString,ignoreCase = true)}
+        )
+
+//    fun searchByID(searchString: String)=
+//        formatListString(
+//            customers.filter { customer -> customer.customerID.toString().contains(searchString)  }
+//        )
+    fun searchByID(searchInt: Int)=
+        formatListString(
+            customers.filter { customer -> customer.customerID.equals(searchInt)  }
+        )
+
+
+    fun searchByItemBought(instrument: MutableSet<Instrument>) =
+        formatListString(
+            customers.filter { customer -> customer.itemsBought.equals(instrument) }
         )
 
     //UPDATE

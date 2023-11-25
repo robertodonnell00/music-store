@@ -290,7 +290,9 @@ fun load() {
 //CREATE
 
 fun addCustomer() {
-    val customerID = readNextInt("Enter Customer ID: ")
+    println("Suggested Customer ID")
+    val customerID = readNextInt("Suggested Customer ID: ${customerAPI.numberOfCustomers()} \nEnter Customer ID: ")
+        //customerAPI.numberOfCustomers()
     val customerName = readNextLine("Enter Customer Name: ")
     val customerAddress = readNextLine("Enter Customer Address: ")
     println("Enter Customer VIP Status (true/false): ")

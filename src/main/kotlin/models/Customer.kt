@@ -1,5 +1,6 @@
 package models
 
+import persistence.Serializer
 
 
 class Customer(
@@ -9,6 +10,7 @@ class Customer(
     var itemsBought: MutableSet<Instrument> = mutableSetOf(),
     var vipCustomer: Boolean,
     var preferredInstrument: String) {
+
     override fun toString(): String {
         return "Customer(customerID='$customerID', customerName=$customerName, customerAddress='$customerAddress', itemsBought=$itemsBought, vipCustomer= $vipCustomer, preferredInstrument= $preferredInstrument)"
     }
