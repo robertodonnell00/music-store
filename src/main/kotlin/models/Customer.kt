@@ -16,10 +16,10 @@ class Customer(
     }
 
     private fun formatListString(instrumentToFormat: MutableSet<Instrument>): String =
-        instrumentToFormat
-            .joinToString("\n") { instrument ->
-                itemsBought.indexOf(instrument).toString() + ": " + instrument.toString()
-            }
+            instrumentToFormat
+                    .joinToString("\n") { instrument ->
+                        itemsBought.indexOf(instrument).toString() + ": " + instrument.toString()
+                    }
 
 
     //CREATE
@@ -43,14 +43,40 @@ class Customer(
     }
 
     fun listInstruments(): String =
-        if (itemsBought.isEmpty()) "No instruments are stored"
-        else formatListString(itemsBought)
+            if (itemsBought.isEmpty()) "No instruments are stored"
+            else formatListString(itemsBought)
+
+    fun listInstrumentsPaidFor(boolean: Boolean): String =
+            if (itemsBought.isEmpty()) "No instruments are stored"
+            else formatListString(
+                    if (boolean)
+                        (itemsBought.filter { instrument -> instrument.isPaidFor }).toMutableSet()
+                    else
+                        (itemsBought.filter { instrument -> !instrument.isPaidFor }).toMutableSet()
+            )
+
+    fun listInstrumentsByType(searchString: String): String {
+        return if (itemsBought.isEmpty()) "No instruments are stored"
+        else
+        {
+            var listOfInstruments = ""
+            for (item in itemsBought) {
+                if (item.instrumentType.contains(searchString, ignoreCase = true)) {
+                    listOfInstruments += "${item.instrumentID}: $item"
+                }
+            }
+            if (listOfInstruments == "") "No items found for $searchString"
+            else listOfInstruments
+        }
+}
 
     fun findInstrument(id: Int): Instrument? {
         return itemsBought.find { instrument -> instrument.instrumentID == id }
     }
 
-
+    fun numberOfInstruments(): Int {
+        return itemsBought.size
+    }
     //UPDATE
     fun updateInstrument(indexToUpdate: Int, instrument: Instrument): Boolean {
         //find instrument using index
@@ -78,8 +104,6 @@ class Customer(
         return itemsBought.removeIf { instrument -> instrument.instrumentID == id }
     }
 
-
-    //PERSISTENCE
 
 }
 
