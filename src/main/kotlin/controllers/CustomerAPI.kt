@@ -1,6 +1,7 @@
 package controllers
 
 import models.Customer
+import models.Instrument
 import persistence.Serializer
 
 class CustomerAPI(serializerType: Serializer) {
@@ -33,14 +34,24 @@ class CustomerAPI(serializerType: Serializer) {
         if (customers.isEmpty()) "No customers are stored"
         else formatListString(customers)
 
-    fun listAllInstruments(): Any =
-        if(customers.isEmpty()) "No instruments are stored"
+    fun listAllInstruments(): String =
+        if(customers.isEmpty()) "No customers are stored"
         else {
             var instruments = ""
             for (customer in customers){
-                instruments += customer.customerName + ": " + customer.itemsBought
+                instruments += "${customer.customerName}: + ${customer.itemsBought}\n"
             }
+            instruments
         }
+
+    fun listVIPCustomers(): String =
+        if(customers.isEmpty()) "No customers are stored"
+        else formatListString(
+            customers.filter { customer -> customer.vipCustomer == true }
+        )
+
+
+
 
     fun findCustomer(index: Int): Customer? {
         return if(isValidListIndex(index, customers)){
@@ -55,6 +66,31 @@ class CustomerAPI(serializerType: Serializer) {
     fun getCustomer(index: Int): Customer {
         return customers[index]
     }
+
+    fun searchByName(searchString: String)=
+        formatListString(
+            customers.filter { customer -> customer.customerName.contains(searchString, ignoreCase = true) }
+        )
+
+    fun searchByAddress(searchString: String)=
+        formatListString(
+            customers.filter { customer -> customer.customerAddress.contains(searchString,ignoreCase = true)}
+        )
+
+//    fun searchByID(searchString: String)=
+//        formatListString(
+//            customers.filter { customer -> customer.customerID.toString().contains(searchString)  }
+//        )
+    fun searchByID(searchInt: Int)=
+        formatListString(
+            customers.filter { customer -> customer.customerID.equals(searchInt)  }
+        )
+
+
+    fun searchByItemBought(instrument: MutableSet<Instrument>) =
+        formatListString(
+            customers.filter { customer -> customer.itemsBought.equals(instrument) }
+        )
 
     //UPDATE
     fun updateCustomer(indexToUpdate: Int, customer: Customer?): Boolean {

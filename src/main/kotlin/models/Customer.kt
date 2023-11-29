@@ -1,5 +1,6 @@
 package models
 
+import persistence.Serializer
 
 
 class Customer(
@@ -9,15 +10,16 @@ class Customer(
     var itemsBought: MutableSet<Instrument> = mutableSetOf(),
     var vipCustomer: Boolean,
     var preferredInstrument: String) {
+
     override fun toString(): String {
         return "Customer(customerID='$customerID', customerName=$customerName, customerAddress='$customerAddress', itemsBought=$itemsBought, vipCustomer= $vipCustomer, preferredInstrument= $preferredInstrument)"
     }
 
     private fun formatListString(instrumentToFormat: MutableSet<Instrument>): String =
-        instrumentToFormat
-            .joinToString("\n") { instrument ->
-                itemsBought.indexOf(instrument).toString() + ": " + instrument.toString()
-            }
+            instrumentToFormat
+                    .joinToString("\n") { instrument ->
+                        itemsBought.indexOf(instrument).toString() + ": " + instrument.toString()
+                    }
 
 
     //CREATE
@@ -41,11 +43,69 @@ class Customer(
     }
 
     fun listInstruments(): String =
-        if (itemsBought.isEmpty()) "No instruments are stored"
-        else formatListString(itemsBought)
+            if (itemsBought.isEmpty()) "No instruments are stored"
+            else formatListString(itemsBought)
+
+    fun listInstrumentsPaidFor(boolean: Boolean): String =
+            if (itemsBought.isEmpty()) "No instruments are stored"
+            else formatListString(
+                    if (boolean)
+                        (itemsBought.filter { instrument -> instrument.isPaidFor }).toMutableSet()
+                    else
+                        (itemsBought.filter { instrument -> !instrument.isPaidFor }).toMutableSet()
+            )
+
+    fun listInstrumentsByType(searchString: String): String {
+        return if (itemsBought.isEmpty()) "No instruments are stored"
+        else
+        {
+            var listOfInstruments = ""
+            for (item in itemsBought) {
+                if (item.instrumentType.contains(searchString, ignoreCase = true)) {
+                    listOfInstruments += "${item.instrumentID}: $item"
+                }
+            }
+            if (listOfInstruments == "") "No items found for $searchString"
+            else listOfInstruments
+        }
+    }
+
+    fun searchInstrumentByID(searchInt: Int) =
+        formatListString(
+            (itemsBought.filter { instrument -> instrument.instrumentID == searchInt }).toMutableSet()
+        )
+
+    fun searchByQuantityBought(searchInt: Int) =
+        formatListString(
+            (itemsBought.filter { instrument -> instrument.qauntityBought == searchInt }).toMutableSet()
+        )
+
+    fun searchByDateReceived(searchString: String) =
+        formatListString(
+            (itemsBought.filter { instrument -> instrument.dateReceived == searchString }).toMutableSet()
+        )
+    fun searchByReview(searchInt: Int) =
+            formatListString(
+                (itemsBought.filter { instrument -> instrument.instrumentReview == searchInt }).toMutableSet()
+            )
+
+    fun searchByInstrumentName(searchString: String) =
+        formatListString(
+            (itemsBought.filter { instrument -> instrument.instrumentName.contains(searchString, ignoreCase = true) }).toMutableSet()
+        )
+
+    fun searchByPrice(searchDouble: Double) =
+        formatListString(
+            (itemsBought.filter { instrument -> instrument.price in (searchDouble - 10.0)..(searchDouble + 10.0) }).toMutableSet()
+        )
+
 
     fun findInstrument(id: Int): Instrument? {
         return itemsBought.find { instrument -> instrument.instrumentID == id }
+    }
+
+    fun numberOfInstruments(): Int {
+        return itemsBought.size
     }
 
 
@@ -56,6 +116,7 @@ class Customer(
         //if instrument exists, use details as parameters to update instrument
         if (foundInstrument != null) {
             foundInstrument.instrumentID = instrument.instrumentID
+            foundInstrument.instrumentName = instrument.instrumentName
             foundInstrument.instrumentType = instrument.instrumentType
             foundInstrument.instrumentReview = instrument.instrumentReview
             foundInstrument.price = instrument.price
@@ -76,8 +137,6 @@ class Customer(
         return itemsBought.removeIf { instrument -> instrument.instrumentID == id }
     }
 
-
-    //PERSISTENCE
 
 }
 

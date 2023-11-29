@@ -290,7 +290,9 @@ fun load() {
 //CREATE
 
 fun addCustomer() {
-    val customerID = readNextInt("Enter Customer ID: ")
+    println("Suggested Customer ID")
+    val customerID = readNextInt("Suggested Customer ID: ${customerAPI.numberOfCustomers()} \nEnter Customer ID: ")
+        //customerAPI.numberOfCustomers()
     val customerName = readNextLine("Enter Customer Name: ")
     val customerAddress = readNextLine("Enter Customer Address: ")
     println("Enter Customer VIP Status (true/false): ")
@@ -334,6 +336,7 @@ fun addInstrumentToCustomer() {
 
     if(customer != null){
         val instrumentID = readNextInt("Enter Instrument ID: ")
+        val instrumentName = readNextLine("Enter Instrument Name: ")
         val instrumentType = readNextLine("Enter the Type of Instrument: ")
         val price = readNextDouble("Enter the price of the instrument: ")
         val quantityBought = readNextInt("Enter the quantity of instruments the customer bought: ")
@@ -343,9 +346,9 @@ fun addInstrumentToCustomer() {
         val dateReceived = readNextLine("Enter the date the customer received instrument: ")
         listAllCustomers()
         val customerIndex = readNextInt("Enter the index of the customer who bought this instrument: ")
-        val customerBought = customerAPI.getCustomer(customerIndex)
+        val customerBoughtID = readNextInt("Enter the id of customer who bought this instrument")
 
-        val isAdded = customer.create(Instrument(instrumentID,instrumentType,price,quantityBought, isPaidFor,instrumentReview,dateReceived,customerBought))
+        val isAdded = customer.create(Instrument(instrumentID, instrumentName, instrumentType,price,quantityBought, isPaidFor,instrumentReview,dateReceived, customerBoughtID))
         if (isAdded) {
             println("Added Successfully")
         } else {
@@ -403,6 +406,7 @@ fun updateInstrument() {
 
         if (instrument != null){
             val instrumentID = readNextInt("Enter the instrument ID: ")
+            val instrumentName = readNextLine("Enter Instrument Name: ")
             val instrumentType = readNextLine("Enter the instrument type: ")
             val price = readNextDouble("Enter the price of instrument: ")
             val quantityBought = readNextInt("Enter the quantity ordered: ")
@@ -412,8 +416,8 @@ fun updateInstrument() {
             val dateReceived = readNextLine("Enter date the customer received instrument: ")
 
             if(customer.updateInstrument(instrument.instrumentID, Instrument(
-                        instrumentID, instrumentType, price, quantityBought,
-                        isPaidFor, instrumentReview, dateReceived, customer
+                        instrumentID, instrumentType, instrumentName, price, quantityBought,
+                        isPaidFor, instrumentReview, dateReceived, customer.customerID
                 )))
                     println("Instrument details updated")
                     else println("Invalid Instrument ID")
