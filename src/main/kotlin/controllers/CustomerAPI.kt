@@ -53,7 +53,6 @@ class CustomerAPI(serializerType: Serializer) {
 
 
 
-
     fun findCustomer(index: Int): Customer? {
         return if(isValidListIndex(index, customers)){
             customers[index]
@@ -87,11 +86,17 @@ class CustomerAPI(serializerType: Serializer) {
             customers.filter { customer -> customer.customerID.equals(searchInt)  }
         )
 
-
     fun searchByItemBought(instrument: MutableSet<Instrument>) =
         formatListString(
             customers.filter { customer -> customer.itemsBought.equals(instrument) }
         )
+
+    fun searchCustomersByPreferredInst(searchString: String) =
+        if(customers.isEmpty()) "No customers are stored"
+        else formatListString(
+            customers.filter { customer -> customer.preferredInstrument.contains(searchString, ignoreCase = true) }
+        )
+
 
     //UPDATE
     fun updateCustomer(indexToUpdate: Int, customer: Customer?): Boolean {

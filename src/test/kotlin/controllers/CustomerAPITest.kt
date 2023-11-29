@@ -121,8 +121,8 @@ class CustomerAPITest {
             assertTrue(VIPcustomers.contains("Joe"))
             assertTrue(VIPcustomers.contains("Mary"))
             assertFalse(VIPcustomers.contains("Mike"))
-
         }
+
     }
 
     @Nested
@@ -213,6 +213,20 @@ class CustomerAPITest {
             assertTrue(searchResult.contains("Mike"))
             assertTrue(!searchResult.contains("Mary"))
             println("-----------\n$searchResult\n-------------")
+        }
+
+        @Test
+        fun searchCustomersByPreferredInstTest() {
+            val noCustomer = emptyCustomers!!.listVIPCustomers()
+            assertTrue(noCustomer.contains("No customers"))
+
+            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            val customerType = populatedCustomers!!.searchCustomersByPreferredInst("Guitar")
+            println("------\n$customerType\n--------")
+            assertTrue(customerType.contains("Fred"))
+            assertFalse(customerType.contains("Joe"))
+            assertFalse(customerType.contains("Mary"))
+            assertFalse(customerType.contains("Mike"))
         }
 
     }
