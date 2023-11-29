@@ -68,7 +68,37 @@ class Customer(
             if (listOfInstruments == "") "No items found for $searchString"
             else listOfInstruments
         }
-}
+    }
+
+    fun searchInstrumentByID(searchInt: Int) =
+        formatListString(
+            (itemsBought.filter { instrument -> instrument.instrumentID == searchInt }).toMutableSet()
+        )
+
+    fun searchByQuantityBought(searchInt: Int) =
+        formatListString(
+            (itemsBought.filter { instrument -> instrument.qauntityBought == searchInt }).toMutableSet()
+        )
+
+    fun searchByDateReceived(searchString: String) =
+        formatListString(
+            (itemsBought.filter { instrument -> instrument.dateReceived == searchString }).toMutableSet()
+        )
+    fun searchByReview(searchInt: Int) =
+            formatListString(
+                (itemsBought.filter { instrument -> instrument.instrumentReview == searchInt }).toMutableSet()
+            )
+
+    fun searchByInstrumentName(searchString: String) =
+        formatListString(
+            (itemsBought.filter { instrument -> instrument.instrumentName.contains(searchString, ignoreCase = true) }).toMutableSet()
+        )
+
+    fun searchByPrice(searchDouble: Double) =
+        formatListString(
+            (itemsBought.filter { instrument -> instrument.price in (searchDouble - 10.0)..(searchDouble + 10.0) }).toMutableSet()
+        )
+
 
     fun findInstrument(id: Int): Instrument? {
         return itemsBought.find { instrument -> instrument.instrumentID == id }
@@ -77,6 +107,8 @@ class Customer(
     fun numberOfInstruments(): Int {
         return itemsBought.size
     }
+
+
     //UPDATE
     fun updateInstrument(indexToUpdate: Int, instrument: Instrument): Boolean {
         //find instrument using index
@@ -84,6 +116,7 @@ class Customer(
         //if instrument exists, use details as parameters to update instrument
         if (foundInstrument != null) {
             foundInstrument.instrumentID = instrument.instrumentID
+            foundInstrument.instrumentName = instrument.instrumentName
             foundInstrument.instrumentType = instrument.instrumentType
             foundInstrument.instrumentReview = instrument.instrumentReview
             foundInstrument.price = instrument.price

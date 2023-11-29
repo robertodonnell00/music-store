@@ -22,11 +22,11 @@ class CustomerAPITest {
     private var populatedCustomers: CustomerAPI? = CustomerAPI(JSONSerializer(File("customers.json")))
     private var emptyCustomers: CustomerAPI? = CustomerAPI(JSONSerializer(File("customers.json")))
 
-    private var guitar: Instrument = Instrument(0, "Guitar", 300.00, 1, true, 7, "03/02/22", 0)
-    private var drums: Instrument = Instrument(1, "Drums", 490.00, 1, true, 8, "31/10/22", 1)
-    private var flute: Instrument = Instrument(2, "Wind", 80.00, 1, true, 4, "15/04/21", 2)
-    private var piano: Instrument = Instrument(3, "Piano", 600.00, 1, true, 9, "28/06/23", 3)
-    private var harp: Instrument = Instrument(4, "Strings", 300.00, 1, true, 6, "09/08/23", 3)
+    private var guitar: Instrument = Instrument(0, "Stratocaster","Guitar", 300.00, 1, true, 7, "03/02/22", 0)
+    private var drums: Instrument = Instrument(1, "Snare","Drums", 490.00, 1, true, 8, "31/10/22", 1)
+    private var flute: Instrument = Instrument(2, "Jazz Flute","Wind", 80.00, 1, true, 4, "15/04/21", 2)
+    private var piano: Instrument = Instrument(3, "E-Piano","Piano", 600.00, 1, true, 9, "28/06/23", 3)
+    private var harp: Instrument = Instrument(4, "Harp","Strings", 300.00, 1, true, 6, "09/08/23", 3)
 
     @BeforeEach
     fun setup() {
@@ -194,7 +194,7 @@ class CustomerAPITest {
         @Test
         fun searchByItemsBoughtTest() {
             //Searching for an instrument not assigned to anyone will return nothing
-            val keys: Instrument = Instrument(293, "Strings", 300.00, 1, true, 6, "09/08/23", 34)
+            val keys: Instrument = Instrument(293,"Fender", "Strings", 300.00, 1, true, 6, "09/08/23", 34)
             assertEquals(4, populatedCustomers!!.numberOfCustomers())
             var searchResult = populatedCustomers!!.searchByItemBought(mutableSetOf(keys))
             assertTrue(searchResult.isEmpty())
