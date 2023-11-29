@@ -16,6 +16,8 @@ val scannerInput = ScannerInput
 
 //private val instrumentAPI = InstrumentAPI(JSONSerializer(File("instruments.json")))
 private val customerAPI = CustomerAPI(JSONSerializer(File("customers.json")))
+
+
 fun main(args: Array<String>) {
     dummyData()
     runMainMenu()
@@ -34,7 +36,7 @@ fun main(args: Array<String>) {
       > |    2) Instrument Menu          |
       > ----------------------------------
       > |    3) Save changes            |
-      > ---------------------  -------------
+      > ----------------------------------
       > |    0) Exit                     |
       > ----------------------------------
       > ==>> 
@@ -101,10 +103,6 @@ fun main(args: Array<String>) {
       > | Customer List Menu:            |
       > |    1) List all customers       |
       > |    2) List VIP customers       |
-      > |    3) List Customers by        |
-      > |       preferred instrument     |
-      > |    4) List Customers who       | 
-      > |       have not yet Paid        |
       > ----------------------------------
       > |    0) Back                     |
       > ----------------------------------
@@ -117,10 +115,8 @@ fun main(args: Array<String>) {
         do {
             when (val option = customerListMenu()) {
                  1 -> listAllCustomers()
-                // 2 -> listVIPCustomers()
-                // 3 -> listCustomersByType()
-                // 4 -> listCustomersByNotPaid()
-                0 -> runCustomerMenu()
+                 2 -> listVIPCustomers()
+                 0 -> runCustomerMenu()
                 else -> println("Invalid option selected: $option")
             }
         } while (true)
@@ -139,6 +135,8 @@ fun main(args: Array<String>) {
       > |       Bought                   |
       > |    4) Search Customer by       |
       > |       Address                  |
+      > |    5) Search Customer by       |
+      > |       Preferred Instrument     |
       > ----------------------------------
       > |    0) Back                     |
       > ----------------------------------
@@ -150,10 +148,11 @@ fun main(args: Array<String>) {
     fun runCustomerSearchMenu() {
         do {
             when (val option = customerSearchMenu()) {
-                // 1 -> searchCustomerByName()
-                // 2 -> searchCustomerByID()
-                // 3 -> searchCustomerByItem()
-                // 4 -> searchCustomerByAddress()
+                1 -> searchCustomerByName()
+                2 -> searchCustomerByID()
+                3 -> searchCustomerByItem()
+                4 -> searchCustomerByAddress()
+                5 -> searchCustomerByPreferredInst()
                 0 -> runCustomerMenu()
                 else -> println("Invalid option selected: $option")
             }
@@ -361,13 +360,67 @@ fun addInstrumentToCustomer() {
 
 //READ
 
+//LIST Customers
 fun listAllCustomers() {
     println(customerAPI.listAllCustomers())
 }
 
-fun listAllCustomerItems() {
+fun listAllCustomerInstruments() {
     println(customerAPI.listAllInstruments())
 }
+
+fun listVIPCustomers() {
+    println(customerAPI.listVIPCustomers())
+}
+
+
+
+
+//SEARCH CUSTOMER
+
+fun searchCustomerByPreferredInst() {
+    val searchType = readNextLine("Enter type of Instrument: ")
+    val searchResults = customerAPI.searchCustomersByPreferredInst(searchType)
+    if(searchResults.isEmpty())
+        println("No customers found")
+    else println(searchResults)
+}
+
+fun searchCustomerByName() {
+    val searchName = readNextLine("Enter the Customer's name: ")
+    val searchResults = customerAPI.searchByName(searchName)
+    if(searchResults.isEmpty())
+        println("No customers found")
+    else println(searchResults)
+}
+fun searchCustomerByAddress() {
+    val searchAddress = readNextLine("Enter the Customer's Address: ")
+    val searchResults = customerAPI.searchByAddress(searchAddress)
+    if(searchResults.isEmpty())
+        println("No customers found")
+    else println(searchResults)
+}
+fun searchCustomerByID() {
+    val searchID = readNextInt("Enter the Customer's ID: ")
+    val searchResults = customerAPI.searchByID(searchID)
+    if(searchResults.isEmpty())
+        println("No customers found")
+    else println(searchResults)
+}
+
+
+//FIX
+fun searchCustomerByItem() {
+    val instrumentID = readNextInt("Enter the ID of instrument: ")
+    val customer: Customer?
+    // val searchResults = customerAPI.searchByItemBought((customer.searchInstrumentByID(instrumentID)).toMutableSet())
+}
+
+
+
+
+
+
 
 
 

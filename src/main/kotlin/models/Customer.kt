@@ -71,36 +71,47 @@ class Customer(
     }
 
     fun searchInstrumentByID(searchInt: Int) =
-        formatListString(
+        if (itemsBought.isEmpty()) "No instruments stored"
+        else  formatListString(
             (itemsBought.filter { instrument -> instrument.instrumentID == searchInt }).toMutableSet()
         )
 
     fun searchByQuantityBought(searchInt: Int) =
-        formatListString(
+        if (itemsBought.isEmpty()) "No instruments stored"
+        else formatListString(
             (itemsBought.filter { instrument -> instrument.qauntityBought == searchInt }).toMutableSet()
         )
 
     fun searchByDateReceived(searchString: String) =
+        if (itemsBought.isEmpty()) "No instruments stored"
+        else
         formatListString(
             (itemsBought.filter { instrument -> instrument.dateReceived == searchString }).toMutableSet()
         )
     fun searchByReview(searchInt: Int) =
+        if (itemsBought.isEmpty()) "No instruments stored"
+        else
             formatListString(
                 (itemsBought.filter { instrument -> instrument.instrumentReview == searchInt }).toMutableSet()
             )
 
     fun searchByInstrumentName(searchString: String) =
+        if (itemsBought.isEmpty()) "No instruments stored"
+        else
         formatListString(
             (itemsBought.filter { instrument -> instrument.instrumentName.contains(searchString, ignoreCase = true) }).toMutableSet()
         )
 
     fun searchByPrice(searchDouble: Double) =
+        if (itemsBought.isEmpty()) "No instruments stored"
+        else
         formatListString(
             (itemsBought.filter { instrument -> instrument.price in (searchDouble - 10.0)..(searchDouble + 10.0) }).toMutableSet()
         )
 
 
     fun findInstrument(id: Int): Instrument? {
+
         return itemsBought.find { instrument -> instrument.instrumentID == id }
     }
 
