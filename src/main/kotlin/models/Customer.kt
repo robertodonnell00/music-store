@@ -12,7 +12,10 @@ class Customer(
     var preferredInstrument: String) {
 
     override fun toString(): String {
-        return "Customer(customerID='$customerID', customerName=$customerName, customerAddress='$customerAddress', itemsBought=$itemsBought, vipCustomer= $vipCustomer, preferredInstrument= $preferredInstrument)"
+        return "Customer ID: '$customerID'           Name: $customerName" +
+                "\n\tcustomerAddress: $customerAddress" +
+                "\n\titemsBought:\n\t$itemsBought    " +
+                "\n\tVIP Status: $vipCustomer    Preferred Instrument Type: $preferredInstrument"
     }
 
     private fun formatListString(instrumentToFormat: MutableSet<Instrument>): String =
@@ -111,7 +114,6 @@ class Customer(
 
 
     fun findInstrument(id: Int): Instrument? {
-
         return itemsBought.find { instrument -> instrument.instrumentID == id }
     }
 

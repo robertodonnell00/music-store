@@ -139,12 +139,13 @@ class CustomerTest {
         fun searchByInstrumentIDTest() {
             //Search returns no instruments when no instrument of given ID exist
             assertEquals(5, customerFred!!.numberOfInstruments())
-            var searchResult = customerFred!!.searchInstrumentByID(7)
+            var searchResult = customerFred!!.searchInstrumentByID(99)
             assertTrue(searchResult.isEmpty())
 
             //Searching an empty collection
             assertEquals(0, customerJoe!!.numberOfInstruments())
-            assertTrue(customerJoe!!.searchInstrumentByID(7).isEmpty())
+            println(customerJoe!!.searchInstrumentByID(99))
+            assertTrue(customerJoe!!.searchInstrumentByID(99).contains("No instruments"))
 
             //Searching a populated collection for an id returns that instrument
             searchResult = customerFred!!.searchInstrumentByID(2)
@@ -162,7 +163,7 @@ class CustomerTest {
 
             //Searching an empty collection
             assertEquals(0, customerJoe!!.numberOfInstruments())
-            assertTrue(customerJoe!!.searchByQuantityBought(7).isEmpty())
+            assertTrue(customerJoe!!.searchByQuantityBought(7).contains("No instruments"))
 
             //Searching a populated collection for quantity returns that instrument
             searchResult = customerFred!!.searchByQuantityBought(3)
@@ -180,7 +181,7 @@ class CustomerTest {
 
             //Searching an empty collection
             assertEquals(0, customerJoe!!.numberOfInstruments())
-            assertTrue(customerJoe!!.searchByDateReceived("No insrument").isEmpty())
+            assertTrue(customerJoe!!.searchByDateReceived("No insrument").contains("No instruments"))
 
             //Searching a populated collection for a date returns instrument
             searchResult = customerFred!!.searchByDateReceived("03/02/22")
@@ -207,7 +208,7 @@ class CustomerTest {
 
             //Searching an empty collection
             assertEquals(0, customerJoe!!.numberOfInstruments())
-            assertTrue(customerJoe!!.searchByDateReceived("No instrument").isEmpty())
+            assertTrue(customerJoe!!.searchByDateReceived("No instrument").contains("No instruments"))
 
             //Searching a populated collection for a date returns instrument bought on given day
             searchResult = customerFred!!.searchByDateReceived("03/02/22")
@@ -233,7 +234,7 @@ class CustomerTest {
 
             //Searching an empty collection
             assertEquals(0, customerJoe!!.numberOfInstruments())
-            assertTrue(customerJoe!!.searchByInstrumentName("No instrument").isEmpty())
+            assertTrue(customerJoe!!.searchByInstrumentName("No instrument").contains("No instruments"))
 
             //Searching a populated collection for a name returns instrument
             searchResult = customerFred!!.searchByInstrumentName("Stratocaster")
@@ -257,7 +258,7 @@ class CustomerTest {
 
             //Searching an empty collection
             assertEquals(0, customerJoe!!.numberOfInstruments())
-            assertTrue(customerJoe!!.searchByReview(34).isEmpty())
+            assertTrue(customerJoe!!.searchByReview(34).contains("No instruments"))
 
             //Searching a populated collection for a review returns that instrument
             searchResult = customerFred!!.searchByReview(7)
@@ -283,7 +284,7 @@ class CustomerTest {
 
             //Searching an empty collection
             assertEquals(0, customerJoe!!.numberOfInstruments())
-            assertTrue(customerJoe!!.searchByPrice(34324.2).isEmpty())
+            assertTrue(customerJoe!!.searchByPrice(34324.2).contains("No instruments"))
 
             //Searching a populated collection for a review returns that instrument
             searchResult = customerFred!!.searchByPrice(300.00)

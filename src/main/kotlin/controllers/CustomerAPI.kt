@@ -77,10 +77,7 @@ class CustomerAPI(serializerType: Serializer) {
             customers.filter { customer -> customer.customerAddress.contains(searchString,ignoreCase = true)}
         )
 
-//    fun searchByID(searchString: String)=
-//        formatListString(
-//            customers.filter { customer -> customer.customerID.toString().contains(searchString)  }
-//        )
+
     fun searchByID(searchInt: Int)=
         formatListString(
             customers.filter { customer -> customer.customerID.equals(searchInt)  }
@@ -96,6 +93,71 @@ class CustomerAPI(serializerType: Serializer) {
         else formatListString(
             customers.filter { customer -> customer.preferredInstrument.contains(searchString, ignoreCase = true) }
         )
+
+    fun searchInstrumentByName(searchString: String): String {
+        return if (numberOfCustomers() == 0) "No customers stored"
+        else {
+            var listOfInstruments = ""
+            for (customer in customers) {
+                for(instrument in customer.itemsBought) {
+                    if(instrument.instrumentName.contains(searchString, ignoreCase = true)) {
+                        listOfInstruments += "${customer.customerID}: ${customer.customerName}\n${instrument.instrumentID}: ${instrument.instrumentName} \n\t${instrument}\n"
+                    }
+                }
+            }
+            if (listOfInstruments == "") "No instruments found for: $searchString"
+            else listOfInstruments
+        }
+    }
+
+    fun searchInstrumentByType(searchString: String): String {
+        return if (numberOfCustomers() == 0) "No customers stored"
+        else {
+            var listOfInstruments = ""
+            for (customer in customers) {
+                for(instrument in customer.itemsBought) {
+                    if(instrument.instrumentType.contains(searchString, ignoreCase = true)) {
+                        listOfInstruments += "${customer.customerID}: ${customer.customerName}\n${instrument.instrumentID}: ${instrument.instrumentType} \n\t${instrument}\n"
+                    }
+                }
+            }
+            if (listOfInstruments == "") "No instruments found for: $searchString"
+            else listOfInstruments
+        }
+    }
+
+    fun searchInstrumentByPrice(searchDouble: Double): String {
+        return if (numberOfCustomers() == 0) "No customers stored"
+        else {
+            var listOfInstruments = ""
+            for (customer in customers) {
+                for(instrument in customer.itemsBought) {
+                    if(instrument.price in (searchDouble - 10.0)..(searchDouble +10)) {
+                        listOfInstruments += "${customer.customerID}: ${customer.customerName}\n${instrument.instrumentID}: ${instrument.instrumentName} \n\t${instrument}\n"
+                    }
+                }
+            }
+            if (listOfInstruments == "") "No instruments found for: $searchDouble"
+            else listOfInstruments
+        }
+    }
+
+    fun searchInstrumentByReview(searchInt: Int): String {
+        return if (numberOfCustomers() == 0) "No customers stored"
+        else {
+            var listOfInstruments = ""
+            for (customer in customers) {
+                for(instrument in customer.itemsBought) {
+                    if(instrument.instrumentReview == searchInt) {
+                        listOfInstruments += "${customer.customerID}: ${customer.customerName}\n${instrument.instrumentID}: ${instrument.instrumentName} \n\t${instrument}\n"
+                    }
+                }
+            }
+            if (listOfInstruments == "") "No instruments found for: $searchInt"
+            else listOfInstruments
+        }
+    }
+
 
 
     //UPDATE
