@@ -26,7 +26,7 @@ class CustomerAPITest {
     private var drums: Instrument = Instrument(1, "Snare","Drums", 490.00, 1, true, 8, "31/10/22", 1)
     private var flute: Instrument = Instrument(2, "Jazz Flute","Wind", 80.00, 1, true, 4, "15/04/21", 2)
     private var piano: Instrument = Instrument(3, "E-Piano","Piano", 600.00, 1, true, 9, "28/06/23", 3)
-    private var harp: Instrument = Instrument(4, "Harp","Strings", 300.00, 1, true, 6, "09/08/23", 3)
+    private var harp: Instrument = Instrument(4, "Harp","Strings", 300.00, 1, false, 6, "09/08/23", 3)
 
     @BeforeEach
     fun setup() {
@@ -121,6 +121,32 @@ class CustomerAPITest {
             assertTrue(VIPcustomers.contains("Joe"))
             assertTrue(VIPcustomers.contains("Mary"))
             assertFalse(VIPcustomers.contains("Mike"))
+        }
+
+        @Test
+        fun listInstrumentsPaidForTest() {
+            //Testing when no customers exist
+            val noCustomer = emptyCustomers!!.listInstrumentsPaidFor(true)
+            assertTrue(noCustomer.contains("No customers"))
+
+
+            //Testing for instruments paid for
+            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            var instrumentSearch = populatedCustomers!!.listInstrumentsPaidFor(true)
+            assertTrue(instrumentSearch.contains("Fred"))
+            assertTrue(instrumentSearch.contains("Stratocaster"))
+            assertTrue(instrumentSearch.contains("Guitar"))
+            assertFalse(instrumentSearch.contains("Harp"))
+
+            //Testing for instruments not paid for
+            val keys: Instrument = Instrument(293,"Fender", "Strings", 300.00, 1, false, 7, "03/02/22", 34)
+            customerMike!!.create(keys)
+            instrumentSearch = populatedCustomers!!.listInstrumentsPaidFor(false)
+            println("------\n$instrumentSearch\n--------")
+            assertTrue(instrumentSearch.contains("Harp"))
+            assertTrue(instrumentSearch.contains("Fender"))
+            assertFalse(instrumentSearch.contains("Guitar"))
+            assertFalse(instrumentSearch.contains("Drums"))
         }
 
     }
@@ -330,6 +356,35 @@ class CustomerAPITest {
             assertFalse(instrumentSearch.contains("Drums"))
         }
 
+        @Test
+        fun searchInstrumentByDateTest() {
+            //Testing when no customers exist
+            val noCustomer = emptyCustomers!!.searchInstrumentByDate("Test")
+            assertTrue(noCustomer.contains("No customers"))
+
+            //Testing for when no instruments of given type exist
+            val noInstrument = populatedCustomers!!.searchInstrumentByDate("23423423")
+            assertTrue(noInstrument.contains("No instrument"))
+
+            //Testing returns instrument of same review
+            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            var instrumentSearch = populatedCustomers!!.searchInstrumentByDate("03/02/22")
+            assertTrue(instrumentSearch.contains("Fred"))
+            assertTrue(instrumentSearch.contains("Stratocaster"))
+            assertTrue(instrumentSearch.contains("Guitar"))
+            assertFalse(instrumentSearch.contains("Drums"))
+
+            //Testing for instruments bought on same date
+            val keys: Instrument = Instrument(293,"Fender", "Strings", 300.00, 1, true, 7, "03/02/22", 34)
+            customerMike!!.create(keys)
+            instrumentSearch = populatedCustomers!!.searchInstrumentByDate("03/02/22")
+            println("------\n$instrumentSearch\n--------")
+            assertTrue(instrumentSearch.contains("Mike"))
+            assertTrue(instrumentSearch.contains("Fender"))
+            assertTrue(instrumentSearch.contains("Strings"))
+            assertFalse(instrumentSearch.contains("Drums"))
+        }
+
     }
 
     @Nested
@@ -373,6 +428,25 @@ class CustomerAPITest {
             assertEquals("Tester", populatedCustomers!!.findCustomer(0)!!.customerName)
             assertEquals("Wicklow", populatedCustomers!!.findCustomer(0)!!.customerAddress)
             assertEquals(9, populatedCustomers!!.findCustomer(0)!!.customerID)
+        }
+
+        @Test
+        fun updateStatusTest(){
+            //Cannot upgrade status of customer that doesn't exist
+            assertFalse(populatedCustomers!!.updateStatus(79))
+            assertFalse(populatedCustomers!!.updateStatus(-10))
+            assertFalse(emptyCustomers!!.updateStatus(0))
+
+            //Cannot upgrade status of customer already a vip
+            assertEquals(customerFred!!.vipCustomer, true)
+            assertFalse(populatedCustomers!!.updateStatus(0))
+
+            //Updating status makes customer VIP
+            assertEquals(customerMike!!.vipCustomer, false)
+            assertTrue(populatedCustomers!!.updateStatus(3))
+            assertEquals(customerMike!!.vipCustomer, true)
+
+
         }
     }
 
