@@ -103,7 +103,7 @@ class CustomerAPITest {
             assertEquals(4,populatedCustomers!!.numberOfCustomers())
             val customerInstrument = populatedCustomers!!.listAllInstruments()
             println("\n--------------+ $customerInstrument +-------------------\n")
-            assertTrue(customerInstrument.contains("instrumentID"))
+            assertTrue(customerInstrument.contains("InstrumentID"))
             assertTrue(customerInstrument.contains("Joe"))
             assertTrue(customerInstrument.contains("Drums"))
             assertTrue(customerInstrument.contains("Guitar"))
@@ -182,13 +182,13 @@ class CustomerAPITest {
             assertTrue(searchResult.isEmpty())
 
             searchResult = populatedCustomers!!.searchByID(1)
-            assertTrue(searchResult.contains("customerID='1'"))
-            assertFalse(searchResult.contains("customerID='2'"))
+            assertTrue(searchResult.contains("Fred"))
+            assertFalse(searchResult.contains("Joe"))
             println("------------\n$searchResult\n-----------------")
 
             searchResult = populatedCustomers!!.searchByID(3)
-            assertTrue(searchResult.contains("customerID='3'"))
-            assertTrue(!searchResult.contains("customerID='2'"))
+            assertTrue(searchResult.contains("Mary"))
+            assertTrue(!searchResult.contains("Mike"))
         }
 
         @Test
@@ -217,7 +217,7 @@ class CustomerAPITest {
 
         @Test
         fun searchCustomersByPreferredInstTest() {
-            val noCustomer = emptyCustomers!!.listVIPCustomers()
+            val noCustomer = emptyCustomers!!.searchCustomersByPreferredInst("No")
             assertTrue(noCustomer.contains("No customers"))
 
             assertEquals(4,populatedCustomers!!.numberOfCustomers())
@@ -227,6 +227,107 @@ class CustomerAPITest {
             assertFalse(customerType.contains("Joe"))
             assertFalse(customerType.contains("Mary"))
             assertFalse(customerType.contains("Mike"))
+        }
+
+        @Test
+        fun searchInstrumentByNameTest() {
+            //Testing when no customers exist
+            val noCustomer = emptyCustomers!!.searchInstrumentByName("No")
+            assertTrue(noCustomer.contains("No customers"))
+
+            //Testing for when no instruments of given name exist
+            val noInstrument = populatedCustomers!!.searchInstrumentByName("Bell")
+            assertTrue(noInstrument.contains("No instrument"))
+
+            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            val instrumentSearch = populatedCustomers!!.searchInstrumentByName("Stratocaster")
+            println("------\n$instrumentSearch\n--------")
+            assertTrue(instrumentSearch.contains("Fred"))
+            assertTrue(instrumentSearch.contains("Stratocaster"))
+            assertTrue(instrumentSearch.contains("Guitar"))
+            assertFalse(instrumentSearch.contains("Drums"))
+        }
+
+        @Test
+        fun searchInstrumentByTypeTest() {
+            //Testing when no customers exist
+            val noCustomer = emptyCustomers!!.searchInstrumentByType("No")
+            assertTrue(noCustomer.contains("No customers"))
+
+            //Testing for when no instruments of given type exist
+            val noInstrument = populatedCustomers!!.searchInstrumentByType("Bell")
+            assertTrue(noInstrument.contains("No instrument"))
+
+            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            val instrumentSearch = populatedCustomers!!.searchInstrumentByType("Guitar")
+            println("------\n$instrumentSearch\n--------")
+            assertTrue(instrumentSearch.contains("Fred"))
+            assertTrue(instrumentSearch.contains("Stratocaster"))
+            assertTrue(instrumentSearch.contains("Guitar"))
+            assertFalse(instrumentSearch.contains("Drums"))
+        }
+
+        @Test
+        fun searchInstrumentByPriceTest() {
+            //Testing when no customers exist
+            val noCustomer = emptyCustomers!!.searchInstrumentByPrice(245.32)
+            assertTrue(noCustomer.contains("No customers"))
+
+            //Testing for when no instruments of given price exist
+            val noInstrument = populatedCustomers!!.searchInstrumentByPrice(23432.34)
+            assertTrue(noInstrument.contains("No instrument"))
+
+            //Testing for instruments in range of 10 below and above given price
+            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            var instrumentSearch = populatedCustomers!!.searchInstrumentByPrice(490.0)
+            assertTrue(instrumentSearch.contains("Joe"))
+            assertTrue(instrumentSearch.contains("Snare"))
+            assertTrue(instrumentSearch.contains("Drums"))
+            assertFalse(instrumentSearch.contains("Guitar"))
+
+            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            instrumentSearch = populatedCustomers!!.searchInstrumentByPrice(498.6)
+            assertTrue(instrumentSearch.contains("Joe"))
+            assertTrue(instrumentSearch.contains("Snare"))
+            assertTrue(instrumentSearch.contains("Drums"))
+            assertFalse(instrumentSearch.contains("Guitar"))
+
+            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            instrumentSearch = populatedCustomers!!.searchInstrumentByPrice(482.1)
+            println("------\n$instrumentSearch\n--------")
+            assertTrue(instrumentSearch.contains("Joe"))
+            assertTrue(instrumentSearch.contains("Snare"))
+            assertTrue(instrumentSearch.contains("Drums"))
+            assertFalse(instrumentSearch.contains("Guitar"))
+        }
+
+        @Test
+        fun searchInstrumentByReviewTest() {
+            //Testing when no customers exist
+            val noCustomer = emptyCustomers!!.searchInstrumentByReview(34)
+            assertTrue(noCustomer.contains("No customers"))
+
+            //Testing for when no instruments of given type exist
+            val noInstrument = populatedCustomers!!.searchInstrumentByReview(78)
+            assertTrue(noInstrument.contains("No instrument"))
+
+            //Testing returns instrument of same review
+            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            var instrumentSearch = populatedCustomers!!.searchInstrumentByReview(7)
+            assertTrue(instrumentSearch.contains("Fred"))
+            assertTrue(instrumentSearch.contains("Stratocaster"))
+            assertTrue(instrumentSearch.contains("Guitar"))
+            assertFalse(instrumentSearch.contains("Drums"))
+
+            //Testing for instruments of same review
+            val keys: Instrument = Instrument(293,"Fender", "Strings", 300.00, 1, true, 7, "09/08/23", 34)
+            customerMike!!.create(keys)
+            instrumentSearch = populatedCustomers!!.searchInstrumentByReview(7)
+            println("------\n$instrumentSearch\n--------")
+            assertTrue(instrumentSearch.contains("Mike"))
+            assertTrue(instrumentSearch.contains("Fender"))
+            assertTrue(instrumentSearch.contains("Strings"))
+            assertFalse(instrumentSearch.contains("Drums"))
         }
 
     }

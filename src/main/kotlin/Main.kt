@@ -19,7 +19,7 @@ private val customerAPI = CustomerAPI(JSONSerializer(File("customers.json")))
 
 
 fun main(args: Array<String>) {
-    dummyData()
+    //dummyData()
     runMainMenu()
 }
 
@@ -50,7 +50,7 @@ fun main(args: Array<String>) {
             when (val option = mainMenu()) {
                 1 -> runCustomerMenu()
                 2 -> runInstrumentMenu()
-                // 3 -> save()
+                3 -> save()
                 0 -> exitApp()
                 else -> println("Invalid option selected: $option")
             }
@@ -66,10 +66,11 @@ fun main(args: Array<String>) {
       > | Customer Menu:                 |
       > |    1) Customer List Menu       |
       > |    2) Customer Search Menu     |
-      > |    3) Add a new Customer       |
-      > |    4) Update a Customer        |
-      > |    5) Delete a Customer        |
-      > |    6) Calculate total paid by  |
+      > |    3) Customer Instrument Menu |
+      > |    4) Add a new Customer       |
+      > |    5) Update a Customer        |
+      > |    6) Delete a Customer        |
+      > |    7) Calculate total paid by  |
       > |       Customer                 |
       > ----------------------------------
       > |    0) Main Menu                |
@@ -84,11 +85,12 @@ fun main(args: Array<String>) {
             when (val option = customerMenu()) {
                 1 -> runCustomerListMenu()
                 2 -> runCustomerSearchMenu()
-                3 -> addCustomer()
-                4 -> updateCustomer()
-                5 -> deleteCustomer()
+                3 -> runCustomerInstrumentMenu()
+                4 -> addCustomer()
+                5 -> updateCustomer()
+                6 -> deleteCustomer()
                 // 6 -> calculatePaid()
-                0 -> runMainMenu()
+                0 -> break
                 else -> println("Invalid option selected: $option")
             }
         } while (true)
@@ -103,6 +105,8 @@ fun main(args: Array<String>) {
       > | Customer List Menu:            |
       > |    1) List all customers       |
       > |    2) List VIP customers       |
+      > |    3) List customer's          |
+      > |       instruments              |
       > ----------------------------------
       > |    0) Back                     |
       > ----------------------------------
@@ -116,7 +120,8 @@ fun main(args: Array<String>) {
             when (val option = customerListMenu()) {
                  1 -> listAllCustomers()
                  2 -> listVIPCustomers()
-                 0 -> runCustomerMenu()
+                 3 -> listAllCustomerInstruments()
+                 0 -> break
                 else -> println("Invalid option selected: $option")
             }
         } while (true)
@@ -131,11 +136,9 @@ fun main(args: Array<String>) {
       > | Customer Search Menu:          |
       > |    1) Search Customer by Name  |
       > |    2) Search Customer by ID    |
-      > |    3) Search Customer by Item  |
-      > |       Bought                   |
-      > |    4) Search Customer by       |
+      > |    3) Search Customer by       |
       > |       Address                  |
-      > |    5) Search Customer by       |
+      > |    4) Search Customer by       |
       > |       Preferred Instrument     |
       > ----------------------------------
       > |    0) Back                     |
@@ -150,14 +153,64 @@ fun main(args: Array<String>) {
             when (val option = customerSearchMenu()) {
                 1 -> searchCustomerByName()
                 2 -> searchCustomerByID()
-                3 -> searchCustomerByItem()
-                4 -> searchCustomerByAddress()
-                5 -> searchCustomerByPreferredInst()
-                0 -> runCustomerMenu()
+                3 -> searchCustomerByAddress()
+                4 -> searchCustomerByPreferredInst()
+                0 -> break
                 else -> println("Invalid option selected: $option")
             }
         } while (true)
     }
+
+fun customerInstrumentMenu(): Int {
+    return scannerInput.readNextInt(
+        """
+      > ----------------------------------
+      > |          MUSIC  STORE          |
+      > ----------------------------------
+      > | Customer Instrument Menu:      |
+      > |    1) List all Customers       |
+      > |       Instruments              |
+      > |    2) List all Instruments     |
+      > |       that have/haven't paid   |
+      > |    3) List Customers'          |
+      > |       Instruments by Type      |
+      > |    4) Search Customer For      |
+      > |       Instrument by price      |
+      > |    5) Search Customer For      |
+      > |       Instrument by name       |
+      > |    6) Search Customer For      |
+      > |       Instrument by date       |
+      > |    7) Search Customer For      |
+      > |       Instrument by quantity   |
+      > |    8) Search Customer For      |
+      > |       Instrument by ID         |
+      > |    9) Search Customer For      |
+      > |       Instrument by Review     |
+      > ----------------------------------
+      > |    0) Main Menu                |
+      > ----------------------------------
+      > ==>> 
+    """.trimMargin(">")
+    )
+}
+
+fun runCustomerInstrumentMenu() {
+    do {
+        when (val option = customerInstrumentMenu()) {
+            1 -> listAllCustomerInstruments()
+            2 -> listInstrumentsPaidFor()
+            3 -> listInstrumentsByType()
+            4 -> searchCustomerByInstrumentPrice()
+            5 -> searchCustomerForInstrumentName()
+            6 -> searchCustomerForInstrumentByDate()
+            7 -> searchCustomerForInstrumentByQty()
+            8 -> searchCustomerForInstrumentID()
+            9 -> searchCustomerForInstrumentReview()
+            0 -> break
+            else -> println("Invalid option selected: $option")
+        }
+    } while (true)
+}
 
     fun instrumentMenu(): Int {
         return scannerInput.readNextInt(
@@ -183,77 +236,77 @@ fun main(args: Array<String>) {
                 1 -> addInstrumentToCustomer()
                 2 -> updateInstrument()
                 3 -> deleteInstrument()
-                0 -> runMainMenu()
+                0 -> break
                 else -> println("Invalid option selected: $option")
             }
         } while (true)
     }
 
-//    fun instrumentSearchMenu(): Int {
-//        return scannerInput.readNextInt(
-//            """
-//      > ----------------------------------
-//      > |          MUSIC  STORE          |
-//      > ----------------------------------
-//      > | Instrument Search Menu:        |
-//      > |    1) Search Instrument by ID  |
-//      > |    2) Search Instrument by     |
-//      > |       Price                    |
-//      > |    3) Search Instrument by     |
-//      > |       Date Received            |
-//      > ----------------------------------
-//      > |    0) Back                     |
-//      > ----------------------------------
-//      > ==>>
-//    """.trimMargin(">")
-//        )
-//    }
+    fun instrumentSearchMenu(): Int {
+        return scannerInput.readNextInt(
+            """
+      > ----------------------------------
+      > |          MUSIC  STORE          |
+      > ----------------------------------
+      > | Instrument Search Menu:        |
+      > |    1) Search Instrument by ID  |
+      > |    2) Search Instrument by     |
+      > |       Price                    |
+      > |    3) Search Instrument by     |
+      > |       Date Received            |
+      > |    4) Search Instrument by     |
+      > |       Review                   |
+      > ----------------------------------
+      > |    0) Back                     |
+      > ----------------------------------
+      > ==>>
+    """.trimMargin(">")
+        )
+    }
 
-//    fun runInstrumentSearchMenu() {
-//        do {
-//            when (val option = instrumentSearchMenu()) {
-//                // 1 -> searchInstrumentByID()
-//                // 2 -> searchInstrumentByPrice()
-//                // 3 -> searchInstrumentByDateReceived()
-//                0 -> runInstrumentMenu()
-//                else -> println("Invalid option selected: $option")
-//            }
-//        } while (true)
-//    }
+    fun runInstrumentSearchMenu() {
+        do {
+            when (val option = instrumentSearchMenu()) {
+                1 -> searchInstrumentByName()
+                2 -> searchInstrumentByPrice()
+                3 -> searchInstrumentByType()
+                4 -> searchInstrumentByReview()
+                0 -> break
+                else -> println("Invalid option selected: $option")
+            }
+        } while (true)
+    }
 
-//    fun instrumentListMenu(): Int {
-//        return scannerInput.readNextInt(
-//            """
-//      > ----------------------------------
-//      > |          MUSIC  STORE          |
-//      > ----------------------------------
-//      > | Instrument List Menu:          |
-//      > |    1) List all instruments     |
-//      > |    2) List instruments of type |
-//      > |    3) List instruments by      |
-//      > |       customer who bought      |
-//      > |    4) List instruments by      |
-//      > |       Review                   |
-//      > ----------------------------------
-//      > |    0) Back                     |
-//      > ----------------------------------
-//      > ==>>
-//    """.trimMargin(">")
-//        )
-//    }
+    fun instrumentListMenu(): Int {
+        return scannerInput.readNextInt(
+            """
+      > ----------------------------------
+      > |          MUSIC  STORE          |
+      > ----------------------------------
+      > | Instrument List Menu:          |
+      > |    1) List all instruments     |
+      > |    2) List instruments of type |
+      > |    3) List instruments by      |
+      > |       Paid status              |
+      > ----------------------------------
+      > |    0) Back                     |
+      > ----------------------------------
+      > ==>>
+    """.trimMargin(">")
+        )
+    }
 
-//    fun runInstrumentListMenu() {
-//        do {
-//            when (val option = instrumentListMenu()) {
-//                 1 -> listAllCustomerItems()
-//                // 2 -> listInstrumentsOfType()
-//                // 3 -> listInstrumentsByCustomer()
-//                // 4 -> listInstrumentsByReview()
-//                0 -> runInstrumentMenu()
-//                else -> println("Invalid option selected: $option")
-//            }
-//        } while (true)
-//    }
+    fun runInstrumentListMenu() {
+        do {
+            when (val option = instrumentListMenu()) {
+                 1 -> listAllCustomerInstruments()
+                 2 -> listInstrumentsByType()
+                 3 -> listInstrumentsPaidFor()
+                 0 -> break
+                else -> println("Invalid option selected: $option")
+            }
+        } while (true)
+    }
 
 
 //PERSISTENCE
@@ -343,11 +396,9 @@ fun addInstrumentToCustomer() {
         val isPaidFor = readln().toBoolean()
         val instrumentReview = readNextInt("Enter the review for instrument: ")
         val dateReceived = readNextLine("Enter the date the customer received instrument: ")
-        listAllCustomers()
-        val customerIndex = readNextInt("Enter the index of the customer who bought this instrument: ")
-        val customerBoughtID = readNextInt("Enter the id of customer who bought this instrument")
 
-        val isAdded = customer.create(Instrument(instrumentID, instrumentName, instrumentType,price,quantityBought, isPaidFor,instrumentReview,dateReceived, customerBoughtID))
+
+        val isAdded = customer.create(Instrument(instrumentID, instrumentName, instrumentType,price,quantityBought, isPaidFor,instrumentReview,dateReceived, customer.customerID))
         if (isAdded) {
             println("Added Successfully")
         } else {
@@ -365,15 +416,13 @@ fun listAllCustomers() {
     println(customerAPI.listAllCustomers())
 }
 
-fun listAllCustomerInstruments() {
+fun listAllInstruments() {
     println(customerAPI.listAllInstruments())
 }
 
 fun listVIPCustomers() {
     println(customerAPI.listVIPCustomers())
 }
-
-
 
 
 //SEARCH CUSTOMER
@@ -408,20 +457,109 @@ fun searchCustomerByID() {
     else println(searchResults)
 }
 
+// When you know the customer but not instrument
 
-//FIX
-fun searchCustomerByItem() {
-    val instrumentID = readNextInt("Enter the ID of instrument: ")
-    val customer: Customer?
-    // val searchResults = customerAPI.searchByItemBought((customer.searchInstrumentByID(instrumentID)).toMutableSet())
+fun searchCustomerByInstrumentPrice() {
+    val customer = chooseCustomer()
+    val option = readNextDouble("Enter the price of the Instrument: ")
+    val result = customer!!.searchByPrice(option)
+    if(result.isEmpty())println("Nothing found")
+    else println(result)
+}
+
+fun searchCustomerForInstrumentName() {
+    val customer = chooseCustomer()
+    val option = readNextLine("Enter name of the instrument: ")
+    val result = customer!!.searchByInstrumentName(option)
+    if(result.isEmpty()) println("Nothing Found")
+    else println(result)
+}
+
+fun searchCustomerForInstrumentReview() {
+    val customer = chooseCustomer()
+    val option = readNextInt("Enter the review for the Instrument: ")
+    val result = customer!!.searchByReview(option)
+    if(result.isEmpty()) println("Nothing Found")
+    else println(result)
+}
+
+fun searchCustomerForInstrumentByDate() {
+    val customer = chooseCustomer()
+    val option = readNextLine("Enter the date Instrument was received: ")
+    val result = customer!!.searchByDateReceived(option)
+    if(result.isEmpty()) println("Nothing Found")
+    else println(result)
+}
+
+fun searchCustomerForInstrumentByQty() {
+    val customer = chooseCustomer()
+    val option = readNextInt("Enter the quantity of Instrument purchased: ")
+    val result = customer!!.searchByQuantityBought(option)
+    if(result.isEmpty()) println("Nothing Found")
+    else println(result)
+}
+
+fun searchCustomerForInstrumentID() {
+    val customer = chooseCustomer()
+    val option = readNextInt("Enter the ID of Instrument: ")
+    val result = customer!!.searchInstrumentByID(option)
+    if(result.isEmpty()) println("Nothing Found")
+    else println(result)
 }
 
 
 
 
+fun listAllCustomerInstruments() {
+    val customer = chooseCustomer()
+    println(customer!!.listInstruments())
+}
+
+fun listInstrumentsPaidFor() {
+    val customer = chooseCustomer()
+    val option = (readNextLine("Has the customer paid?(true/false): ")).toBoolean()
+    val result = customer!!.listInstrumentsPaidFor(option)
+    if(result.isEmpty()) println("Nothing Found")
+    else println(result)
+}
+
+fun listInstrumentsByType() {
+    val customer = chooseCustomer()
+    val searchString = readNextLine("Enter the type of instrument: ")
+    val result = customer!!.listInstrumentsByType(searchString)
+    if(result.isEmpty())
+        println("Nothing found")
+    else println(result)
+}
 
 
+fun searchInstrumentByName() {
+    val name = readNextLine("Enter the name of the instrument: ")
+    val searchResults = customerAPI.searchInstrumentByName(name)
+    if(searchResults.isEmpty()) println("No Instrument by that name")
+    else println(searchResults)
+}
 
+fun searchInstrumentByType() {
+    val type = readNextLine("Enter the type of the instrument: ")
+    val searchResults = customerAPI.searchInstrumentByType(type)
+    if(searchResults.isEmpty()) println("No Instrument of that type")
+    else println(searchResults)
+}
+
+fun searchInstrumentByPrice() {
+    val price = readNextLine("Enter the price of the instrument: ")
+    val searchResults = customerAPI.searchInstrumentByName(price)
+    if(searchResults.isEmpty()) println("No Instrument of that price")
+    else println(searchResults)
+}
+
+fun searchInstrumentByReview() {
+    val review = readNextInt("Enter the review for the instrument: ")
+    val searchResults = customerAPI.searchInstrumentByReview(review)
+    if(searchResults.isEmpty()) println("No Instrument of that price")
+    else println(searchResults)
+}
 
 
 
@@ -502,14 +640,9 @@ fun deleteInstrument() {
         if(instrument != null) {
             val isDeleted = customer.delete(instrument.instrumentID)
             if(isDeleted)
-                println("Delete Succseful")
-             else println("Delete not succesful")
+                println("Delete successful")
+             else println("Delete not successful")
         }
     }
 }
 
-fun dummyData() {
-    logger.info {"Dummy data successfully invoked"}
-   // customerAPI.create(Customer("123Cust","Rob O'Donnell", "Gortavicory Lemybrien",null, true, "Guitar"))
-   // instrumentAPI.create(Instrument("123Inst","Guitar", 500.00, 1, true, 78, "03/03/2021",null))
-}

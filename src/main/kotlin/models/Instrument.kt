@@ -14,6 +14,10 @@ class Instrument(
     var customerBoughtID: Int
 ) {
     override fun toString(): String {
-        return "Customer(instrumentID='$instrumentID', instrumentName='$instrumentName' instrumentType=$instrumentType, price='$price', qauntityBought=$qauntityBought, isPaidFor= $isPaidFor, instrumentReview= $instrumentReview, dateReceived= $dateReceived, customerBought= $customerBoughtID)"
+        return "InstrumentID: '$instrumentID'         Name: '$instrumentName'" +
+                "\n\tInstrument Type: $instrumentType   Price: €$price " +
+                "\n\tQuantity: $qauntityBought               Paid Status: $isPaidFor" +
+                "\n\tReview: $instrumentReview                 Date Sold: $dateReceived" +
+                "\n\tCustomer Bought ID: $customerBoughtID"
     }
 }
