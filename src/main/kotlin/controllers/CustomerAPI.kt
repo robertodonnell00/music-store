@@ -126,6 +126,22 @@ class CustomerAPI(serializerType: Serializer) {
         }
     }
 
+    fun searchInstrumentByDate(searchString: String): String {
+        return if (numberOfCustomers() == 0) "No customers stored"
+        else {
+            var listOfInstruments = ""
+            for (customer in customers) {
+                for(instrument in customer.itemsBought) {
+                    if(instrument.dateReceived.contains(searchString, ignoreCase = true)) {
+                        listOfInstruments += "${customer.customerID}: ${customer.customerName}\n${instrument.instrumentID}: ${instrument.instrumentType} \n\t${instrument}\n"
+                    }
+                }
+            }
+            if (listOfInstruments == "") "No instruments found for: $searchString"
+            else listOfInstruments
+        }
+    }
+
     fun searchInstrumentByPrice(searchDouble: Double): String {
         return if (numberOfCustomers() == 0) "No customers stored"
         else {
@@ -157,6 +173,25 @@ class CustomerAPI(serializerType: Serializer) {
             else listOfInstruments
         }
     }
+    fun listInstrumentsPaidFor(searchBoolean: Boolean): String {
+        return if (numberOfCustomers() == 0) "No customers stored"
+        else {
+            var listOfInstruments = ""
+            for (customer in customers) {
+                for(instrument in customer.itemsBought) {
+                    if(instrument.isPaidFor == searchBoolean) {
+                        listOfInstruments += "${customer.customerID}: ${customer.customerName}\n${instrument.instrumentID}: ${instrument.instrumentName} \n\t${instrument}\n"
+                    }
+                }
+            }
+            if (listOfInstruments == "") "No instruments found for: $searchBoolean"
+            else listOfInstruments
+        }
+    }
+
+//    fun listInstrumentByType(searchString: String): String {
+//        return if
+//    }
 
 
 
@@ -175,6 +210,17 @@ class CustomerAPI(serializerType: Serializer) {
                 foundCustomer.itemsBought = customer.itemsBought
             }
             return true
+        }
+        return false
+    }
+
+    fun updateStatus(index: Int): Boolean {
+        if(isValidIndex(index)){
+            val customerToUpgrade = customers[index]
+            if (!customerToUpgrade.vipCustomer){
+                customerToUpgrade.vipCustomer = true
+                return true
+            }
         }
         return false
     }
