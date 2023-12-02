@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import persistence.JSONSerializer
 import persistence.XMLSerializer
+import persistence.YAMLSerializer
 import java.io.File
 import kotlin.test.assertEquals
 
@@ -477,10 +478,23 @@ class CustomerAPITest {
             assertEquals(storingCustomers.numberOfCustomers(), loadedCustomers.numberOfCustomers())
         }
 
+        @Test
+        fun `saving and loading an empty collection in Yaml doesn't crash app`() {
+            val storingCustomers = CustomerAPI(YAMLSerializer(File("customers.yaml")))
+            storingCustomers.store()
+
+            val loadedCustomers = CustomerAPI(YAMLSerializer(File("customers.yaml")))
+            loadedCustomers.load()
+
+            assertEquals(0,storingCustomers.numberOfCustomers())
+            assertEquals(0,loadedCustomers.numberOfCustomers())
+            assertEquals(storingCustomers.numberOfCustomers(), loadedCustomers.numberOfCustomers())
+        }
+
 
         @Test
-        fun `saving and loading Customers in XML doesn't loose data`() {
-            //Store 3 notes
+        fun `saving and loading Customers in XML doesn't lose data`() {
+            //Store 3 customers
             val storingCustomers = CustomerAPI(XMLSerializer(File("customers.xml")))
             storingCustomers.create(customerMike!!)
             storingCustomers.create(customerJoe!!)
@@ -499,8 +513,8 @@ class CustomerAPITest {
             assertEquals(storingCustomers.findCustomer(2)!!.customerName, loadedCustomers.findCustomer(2)!!.customerName)
         }
         @Test
-        fun `saving and loading Customers in JSON doesn't loose data`() {
-            //Store 3 notes
+        fun `saving and loading Customers in JSON doesn't lose data`() {
+            //Store 3 customers
             val storingCustomers = CustomerAPI(XMLSerializer(File("customers.json")))
             storingCustomers.create(customerMike!!)
             storingCustomers.create(customerJoe!!)
@@ -517,6 +531,56 @@ class CustomerAPITest {
             assertEquals(storingCustomers.findCustomer(0)!!.customerName, loadedCustomers.findCustomer(0)!!.customerName)
             assertEquals(storingCustomers.findCustomer(1)!!.customerName, loadedCustomers.findCustomer(1)!!.customerName)
             assertEquals(storingCustomers.findCustomer(2)!!.customerName, loadedCustomers.findCustomer(2)!!.customerName)
+        }
+
+
+        //YAML saves but doesn't load? Can't figure out why
+        @Test
+        fun `saving and loading Customers in Yaml doesn't lose data`() {
+            //Store 3 customers
+            val storingCustomers = CustomerAPI(YAMLSerializer(File("customers.yaml")))
+            storingCustomers.create(customerMike!!)
+            storingCustomers.create(customerJoe!!)
+            storingCustomers.create(customerMary!!)
+            storingCustomers.store()
+
+            //loading customers.xml into a different collection
+            val loadedCustomers = CustomerAPI(YAMLSerializer(File("customers.yaml")))
+            loadedCustomers.load()
+
+
+            assertEquals(3,storingCustomers.numberOfCustomers())
+            assertEquals(3,loadedCustomers.numberOfCustomers())
+            assertEquals(storingCustomers.numberOfCustomers(), loadedCustomers.numberOfCustomers())
+            assertEquals(storingCustomers.findCustomer(0)!!.customerName, loadedCustomers.findCustomer(0)!!.customerName)
+            assertEquals(storingCustomers.findCustomer(1)!!.customerName, loadedCustomers.findCustomer(1)!!.customerName)
+            assertEquals(storingCustomers.findCustomer(2)!!.customerName, loadedCustomers.findCustomer(2)!!.customerName)
+       }
+
+        @Test
+        fun changePersistenceTypeTest() {
+            //Testing serializer loads and stores customers
+//            val storingCustomers = CustomerAPI(XMLSerializer(File("customers.xml")))
+//            storingCustomers.create(customerMike!!)
+//            storingCustomers.create(customerJoe!!)
+//            storingCustomers.store()
+//
+//            val loadedCustomers = CustomerAPI(XMLSerializer(File("customers.xml")))
+//            loadedCustomers.load()
+//
+//            assertEquals(2,storingCustomers.numberOfCustomers())
+//            assertEquals(2,loadedCustomers.numberOfCustomers())
+//            assertEquals(storingCustomers.findCustomer(0)!!.customerName, loadedCustomers.findCustomer(0)!!.customerName)
+//            assertEquals(storingCustomers.findCustomer(1)!!.customerName, loadedCustomers.findCustomer(1)!!.customerName)
+//
+//            storingCustomers.changePersistenceType(JSONSerializer(File("customers.json")))
+//            loadedCustomers.changePersistenceType(JSONSerializer(File("customers.json")))
+//            //println(storingCustomers.create(customerJoe!!))
+//            storingCustomers.store()
+//            loadedCustomers.load()
+//            println(loadedCustomers.findCustomer(0))
+
+
         }
     }
 

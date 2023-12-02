@@ -3,6 +3,9 @@ import models.Instrument
 import models.Customer
 import mu.KotlinLogging
 import persistence.JSONSerializer
+import persistence.XMLSerializer
+import persistence.YAMLSerializer
+import persistence.Serializer
 import utils.ScannerInput
 import utils.ScannerInput.readNextDouble
 import utils.ScannerInput.readNextInt
@@ -16,20 +19,86 @@ private val logger = KotlinLogging.logger{}
 
 val scannerInput = ScannerInput
 
-//private val instrumentAPI = InstrumentAPI(JSONSerializer(File("instruments.json")))
-private val customerAPI = CustomerAPI(JSONSerializer(File("customers.json")))
+private var customerAPI = CustomerAPI(JSONSerializer(File("customers.json")))
+
+//private var customerAPI = runSelectUserMenu()//CustomerAPI(JSONSerializer(File("customers.json")))
 
 fun roundTwoDecimals(number: Double) = "%.2f".format(number).toDouble()
 val df = DecimalFormat("#.##")
 fun main(args: Array<String>) {
     //dummyData()
     df.roundingMode = RoundingMode.CEILING
-    runMainMenu()
+     runSelectUserMenu()
 }
 
 
+    fun selectUserMenu(): Int {
+        return scannerInput.readNextInt(
+            """
+      > ----------------------------------
+      > |         MUSIC    STORE         |
+      > ----------------------------------
+      > | User Select Menu               |
+      > |    1) Waterford store JSON     |
+      > |    2) Kilkenny Store XML       |
+      > |    3) Cork Store YAML          |
+      > ----------------------------------
+      > |    0) Exit                     |
+      > ----------------------------------
+      > ==>> 
+    """.trimMargin(">")
+        )
+    }
 
-    fun mainMenu(): Int {
+    fun runSelectUserMenu(): CustomerAPI {
+        do {
+            when (val option = selectUserMenu()) {
+                1-> {customerAPI.changePersistenceType(JSONSerializer(File("customers.json")))
+                    passCheck()
+                }
+                2-> {customerAPI.changePersistenceType((XMLSerializer(File("customers.xml"))))
+                    passCheck()
+                }
+                3-> {customerAPI.changePersistenceType((YAMLSerializer(File("customers.yaml"))))
+                    passCheck()
+                }
+                0-> exitApp()
+                else -> println("Invalid option selected: $option")
+            }
+        } while (true)
+    }
+
+
+fun passMenu(): String {
+        print("""
+            >__________________________________
+            >|         MUSIC    STORE         |
+            >|--------------------------------|
+            >|   PLEASE   ENTER   PASSWORD    |
+            >|________________________________|
+            >|To escape (0)                   |
+            >|________________________________|
+            >|Enter Password : """.trimMargin(">"))
+
+        return readLine()!!.toString()
+    }
+
+fun passCheck() {
+    var input: String
+    do {
+        input = passMenu()
+        when(input) {
+            "password"  -> runMainMenu()
+            "PASSWORD" -> runMainMenu()
+            "p" -> runMainMenu() //for testing
+            else -> println("Incorrect password, try again! \n Break out (0)")
+        }
+        println()
+    } while (input != "0")
+}
+
+
+fun mainMenu(): Int {
         return scannerInput.readNextInt(
             """
       > ----------------------------------
@@ -39,7 +108,7 @@ fun main(args: Array<String>) {
       > |    1) Customer Menu            |
       > |    2) Instrument Menu          |
       > ----------------------------------
-      > |    3) Save changes            |
+      > |    3) Save changes             |
       > ----------------------------------
       > |    0) Exit                     |
       > ----------------------------------
@@ -55,7 +124,7 @@ fun main(args: Array<String>) {
                 1 -> runCustomerMenu()
                 2 -> runInstrumentMenu()
                 3 -> save()
-                0 -> exitApp()
+                0 -> break
                 else -> println("Invalid option selected: $option")
             }
             save()
@@ -359,7 +428,7 @@ fun addCustomer() {
     val customerAddress = readNextLine("Enter Customer Address: ")
     println("Enter Customer VIP Status (true/false): ")
     val vipCustomer = readln().toBoolean()
-    val preferredInstrument = readNextLine("Enter preferred type of Instrument: ")
+    val preferredInstrument = selectInstrumentType()
 
     val isAdded = customerAPI.create(Customer(customerID = customerID,
         customerName= customerName, customerAddress= customerAddress,
@@ -375,7 +444,7 @@ fun addCustomer() {
 private fun chooseCustomer(): Customer? {
     listAllCustomers()
     if (customerAPI.numberOfCustomers() > 0){
-        val customer = customerAPI.findCustomer(readNextInt("\nEnter id of the customer: "))
+        val customer = customerAPI.findCustomer(readNextInt("\nEnter index of the customer: "))
         if (customer != null) return customer else {println("Customer ID invalid")}
     }
     return null
@@ -602,8 +671,8 @@ fun updateCustomer() {
             //val instrumentIndex = readNextInt("Enter index of instrument: ")
             //val itemsBought = instrumentAPI.getInstrument(instrumentIndex)
             println("Is customer VIP? (true/false)")
-            val customerVIP = readln().toBoolean()
-            val preferredInstrument = readNextLine("Enter the customer's preferred Instrument type: ")
+            val customerVIP = false
+            val preferredInstrument = selectInstrumentType()
             if (customerAPI.updateCustomer(indexToUpdate, Customer(customerID,customerName,customerAddress, mutableSetOf(), customerVIP,preferredInstrument))){
                 println("Update Successful")
             } else {
@@ -678,7 +747,7 @@ fun selectInstrumentType(): String {
     println("Which category does the Instrument fall under?")
     instrumentTypes.forEachIndexed {index, category ->
         println("${index + 1}) $category")}
-    println("8) Enter new category option")
+    println("9) Enter new category option")
 
     return when (val selectedOption = readNextInt("Enter the number for the category: ")) {
         in 1..instrumentTypes.size -> {
@@ -729,7 +798,7 @@ fun generateReceipt() {
         
     """.trimMargin(">"))
 
-    if ((totalPrice>500.0) and customer.vipCustomer == false){
+    if ((totalPrice>500.0) && !customer.vipCustomer){
         val updateStatus = readNextLine("Customer is eligible for VIP status \nUpdate status? (true/false): ")
         if(updateStatus == "true") {
             //What if customers ID is different than their index?
@@ -740,7 +809,5 @@ fun generateReceipt() {
 
 }
 
-fun upgradeCustomerStatus() {
 
-}
 
