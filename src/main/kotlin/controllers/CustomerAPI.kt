@@ -4,7 +4,7 @@ import models.Customer
 import models.Instrument
 import persistence.Serializer
 
-class CustomerAPI(serializerType: Serializer) {
+class CustomerAPI(private var serializerType: Serializer) {
 
     private var serializer: Serializer = serializerType
     private var customers = ArrayList<Customer>()
@@ -232,6 +232,7 @@ class CustomerAPI(serializerType: Serializer) {
         } else null
     }
 
+    //PERSISTENCE
     @Throws(Exception::class)
     fun store() {
         serializer.write(customers)
@@ -240,5 +241,10 @@ class CustomerAPI(serializerType: Serializer) {
     @Throws(Exception::class)
     fun load() {
         customers = serializer.read() as ArrayList<Customer>
+    }
+
+
+    fun changePersistenceType(newSerializer: Serializer){
+        serializer = newSerializer
     }
 }

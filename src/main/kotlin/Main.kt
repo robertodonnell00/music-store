@@ -3,6 +3,8 @@ import models.Instrument
 import models.Customer
 import mu.KotlinLogging
 import persistence.JSONSerializer
+import persistence.XMLSerializer
+import persistence.Serializer
 import utils.ScannerInput
 import utils.ScannerInput.readNextDouble
 import utils.ScannerInput.readNextInt
@@ -16,16 +18,50 @@ private val logger = KotlinLogging.logger{}
 
 val scannerInput = ScannerInput
 
-//private val instrumentAPI = InstrumentAPI(JSONSerializer(File("instruments.json")))
-private val customerAPI = CustomerAPI(JSONSerializer(File("customers.json")))
+private var customerAPI = CustomerAPI(JSONSerializer(File("customers.json")))
+
+//private var customerAPI = runSelectUserMenu()//CustomerAPI(JSONSerializer(File("customers.json")))
 
 fun roundTwoDecimals(number: Double) = "%.2f".format(number).toDouble()
 val df = DecimalFormat("#.##")
 fun main(args: Array<String>) {
     //dummyData()
     df.roundingMode = RoundingMode.CEILING
-    runMainMenu()
+     runSelectUserMenu()
 }
+
+
+    fun selectUserMenu(): Int {
+        return scannerInput.readNextInt(
+            """
+      > ----------------------------------
+      > |         MUSIC    STORE         |
+      > ----------------------------------
+      > | User Select Menu               |
+      > |    1) Waterford store JSON     |
+      > |    2) Kilkenny Store XML       |
+      > |    3) Cork Store YAML          |
+      > ----------------------------------
+      > |    0) Exit                     |
+      > ----------------------------------
+      > ==>> 
+    """.trimMargin(">")
+        )
+    }
+
+    fun runSelectUserMenu(): CustomerAPI {
+        do {
+            when (val option = selectUserMenu()) {
+                1-> {customerAPI.changePersistenceType(JSONSerializer(File("customers.json")))
+                      runMainMenu()  }
+                2-> {customerAPI.changePersistenceType((XMLSerializer(File("customers.xml"))))
+                    runMainMenu() }
+                3-> runMainMenu()
+                0-> exitApp()
+                else -> println("Invalid option selected: $option")
+            }
+        } while (true)
+    }
 
 
 
@@ -39,7 +75,7 @@ fun main(args: Array<String>) {
       > |    1) Customer Menu            |
       > |    2) Instrument Menu          |
       > ----------------------------------
-      > |    3) Save changes            |
+      > |    3) Save changes             |
       > ----------------------------------
       > |    0) Exit                     |
       > ----------------------------------
@@ -55,7 +91,7 @@ fun main(args: Array<String>) {
                 1 -> runCustomerMenu()
                 2 -> runInstrumentMenu()
                 3 -> save()
-                0 -> exitApp()
+                0 -> break
                 else -> println("Invalid option selected: $option")
             }
             save()
@@ -740,7 +776,5 @@ fun generateReceipt() {
 
 }
 
-fun upgradeCustomerStatus() {
 
-}
 
