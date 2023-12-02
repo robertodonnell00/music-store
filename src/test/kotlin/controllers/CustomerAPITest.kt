@@ -2,7 +2,7 @@ package controllers
 
 import models.Customer
 import models.Instrument
-import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -12,6 +12,9 @@ import persistence.XMLSerializer
 import persistence.YAMLSerializer
 import java.io.File
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class CustomerAPITest {
     private val customerAPI = CustomerAPI(JSONSerializer(File("customers.json")))
@@ -23,11 +26,11 @@ class CustomerAPITest {
     private var populatedCustomers: CustomerAPI? = CustomerAPI(JSONSerializer(File("customers.json")))
     private var emptyCustomers: CustomerAPI? = CustomerAPI(JSONSerializer(File("customers.json")))
 
-    private var guitar: Instrument = Instrument(0, "Stratocaster","Guitar", 300.00, 1, true, 7, "03/02/22", 0)
-    private var drums: Instrument = Instrument(1, "Snare","Drums", 490.00, 1, true, 8, "31/10/22", 1)
-    private var flute: Instrument = Instrument(2, "Jazz Flute","Wind", 80.00, 1, true, 4, "15/04/21", 2)
-    private var piano: Instrument = Instrument(3, "E-Piano","Piano", 600.00, 1, true, 9, "28/06/23", 3)
-    private var harp: Instrument = Instrument(4, "Harp","Strings", 300.00, 1, false, 6, "09/08/23", 3)
+    private var guitar: Instrument = Instrument(0, "Stratocaster", "Guitar", 300.00, 1, true, 7, "03/02/22", 0)
+    private var drums: Instrument = Instrument(1, "Snare", "Drums", 490.00, 1, true, 8, "31/10/22", 1)
+    private var flute: Instrument = Instrument(2, "Jazz Flute", "Wind", 80.00, 1, true, 4, "15/04/21", 2)
+    private var piano: Instrument = Instrument(3, "E-Piano", "Piano", 600.00, 1, true, 9, "28/06/23", 3)
+    private var harp: Instrument = Instrument(4, "Harp", "Strings", 300.00, 1, false, 6, "09/08/23", 3)
 
     @BeforeEach
     fun setup() {
@@ -40,9 +43,7 @@ class CustomerAPITest {
         populatedCustomers!!.create(customerJoe!!)
         populatedCustomers!!.create(customerMary!!)
         populatedCustomers!!.create(customerMike!!)
-
     }
-
 
     @AfterEach
     fun tearDown() {
@@ -80,16 +81,16 @@ class CustomerAPITest {
 
         @Test
         fun `listAllCustomers Test for no customers stored`() {
-            //Test to make sure no customer stored message when arrayList is empty
+            // Test to make sure no customer stored message when arrayList is empty
             assertEquals(0, emptyCustomers!!.numberOfCustomers())
             assertTrue(emptyCustomers!!.listAllCustomers().lowercase().contains("no customer"))
         }
 
         @Test
         fun `listAllCustomers returns Customers`() {
-            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            assertEquals(4, populatedCustomers!!.numberOfCustomers())
             val customerString = populatedCustomers!!.listAllCustomers().lowercase()
-            println("\n--------------+"+ customerString + "+-------------------\n")
+            println("\n--------------+" + customerString + "+-------------------\n")
             assertTrue(customerString.contains("fred"))
             assertTrue(customerString.contains("joe"))
             assertTrue(customerString.contains("mary"))
@@ -101,7 +102,7 @@ class CustomerAPITest {
             val noCustomer = emptyCustomers!!.listAllInstruments()
             assertTrue(noCustomer.contains("No customers"))
 
-            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            assertEquals(4, populatedCustomers!!.numberOfCustomers())
             val customerInstrument = populatedCustomers!!.listAllInstruments()
             println("\n--------------+ $customerInstrument +-------------------\n")
             assertTrue(customerInstrument.contains("InstrumentID"))
@@ -115,7 +116,7 @@ class CustomerAPITest {
             val noCustomer = emptyCustomers!!.listVIPCustomers()
             assertTrue(noCustomer.contains("No customers"))
 
-            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            assertEquals(4, populatedCustomers!!.numberOfCustomers())
             val VIPcustomers = populatedCustomers!!.listVIPCustomers()
             println("------\n$VIPcustomers\n--------")
             assertTrue(VIPcustomers.contains("Fred"))
@@ -126,21 +127,20 @@ class CustomerAPITest {
 
         @Test
         fun listInstrumentsPaidForTest() {
-            //Testing when no customers exist
+            // Testing when no customers exist
             val noCustomer = emptyCustomers!!.listInstrumentsPaidFor(true)
             assertTrue(noCustomer.contains("No customers"))
 
-
-            //Testing for instruments paid for
-            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            // Testing for instruments paid for
+            assertEquals(4, populatedCustomers!!.numberOfCustomers())
             var instrumentSearch = populatedCustomers!!.listInstrumentsPaidFor(true)
             assertTrue(instrumentSearch.contains("Fred"))
             assertTrue(instrumentSearch.contains("Stratocaster"))
             assertTrue(instrumentSearch.contains("Guitar"))
             assertFalse(instrumentSearch.contains("Harp"))
 
-            //Testing for instruments not paid for
-            val keys: Instrument = Instrument(293,"Fender", "Strings", 300.00, 1, false, 7, "03/02/22", 34)
+            // Testing for instruments not paid for
+            val keys: Instrument = Instrument(293, "Fender", "Strings", 300.00, 1, false, 7, "03/02/22", 34)
             customerMike!!.create(keys)
             instrumentSearch = populatedCustomers!!.listInstrumentsPaidFor(false)
             println("------\n$instrumentSearch\n--------")
@@ -149,7 +149,6 @@ class CustomerAPITest {
             assertFalse(instrumentSearch.contains("Guitar"))
             assertFalse(instrumentSearch.contains("Drums"))
         }
-
     }
 
     @Nested
@@ -172,8 +171,7 @@ class CustomerAPITest {
             assertTrue(searchResult.contains("Fred"))
             assertFalse(searchResult.contains("Jay"))
 
-
-            //Testing for customers with same Name
+            // Testing for customers with same Name
             val newCustomer = Customer(12, "Joe", "Galway", mutableSetOf(guitar), true, "Guitar")
             assertTrue(populatedCustomers!!.create(newCustomer))
             assertEquals(5, populatedCustomers!!.numberOfCustomers())
@@ -183,7 +181,7 @@ class CustomerAPITest {
         }
 
         @Test
-        fun searchByAddressTest(){
+        fun searchByAddressTest() {
             assertEquals(4, populatedCustomers!!.numberOfCustomers())
             var searchResult = populatedCustomers!!.searchByAddress("no result expected")
             println("------------\n$searchResult\n-----------------")
@@ -205,7 +203,7 @@ class CustomerAPITest {
         fun searchByIDTest() {
             assertEquals(4, populatedCustomers!!.numberOfCustomers())
             var searchResult = populatedCustomers!!.searchByID(0)
-           //println("------------\n$searchResult\n-----------------")
+            // println("------------\n$searchResult\n-----------------")
             assertTrue(searchResult.isEmpty())
 
             searchResult = populatedCustomers!!.searchByID(1)
@@ -220,13 +218,13 @@ class CustomerAPITest {
 
         @Test
         fun searchByItemsBoughtTest() {
-            //Searching for an instrument not assigned to anyone will return nothing
-            val keys: Instrument = Instrument(293,"Fender", "Strings", 300.00, 1, true, 6, "09/08/23", 34)
+            // Searching for an instrument not assigned to anyone will return nothing
+            val keys: Instrument = Instrument(293, "Fender", "Strings", 300.00, 1, true, 6, "09/08/23", 34)
             assertEquals(4, populatedCustomers!!.numberOfCustomers())
             var searchResult = populatedCustomers!!.searchByItemBought(mutableSetOf(keys))
             assertTrue(searchResult.isEmpty())
 
-            //Searching for an instrument will return the customer who owns it
+            // Searching for an instrument will return the customer who owns it
             searchResult = populatedCustomers!!.searchByItemBought(mutableSetOf(guitar))
             assertTrue(searchResult.contains("Fred"))
             assertTrue(!searchResult.contains("Joe"))
@@ -235,7 +233,7 @@ class CustomerAPITest {
             assertTrue(searchResult.contains("Joe"))
             assertTrue(!searchResult.contains("Fred"))
 
-            //Testing for customer who owns mutliple instruments
+            // Testing for customer who owns mutliple instruments
             searchResult = populatedCustomers!!.searchByItemBought(mutableSetOf(piano, harp))
             assertTrue(searchResult.contains("Mike"))
             assertTrue(!searchResult.contains("Mary"))
@@ -247,7 +245,7 @@ class CustomerAPITest {
             val noCustomer = emptyCustomers!!.searchCustomersByPreferredInst("No")
             assertTrue(noCustomer.contains("No customers"))
 
-            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            assertEquals(4, populatedCustomers!!.numberOfCustomers())
             val customerType = populatedCustomers!!.searchCustomersByPreferredInst("Guitar")
             println("------\n$customerType\n--------")
             assertTrue(customerType.contains("Fred"))
@@ -258,15 +256,15 @@ class CustomerAPITest {
 
         @Test
         fun searchInstrumentByNameTest() {
-            //Testing when no customers exist
+            // Testing when no customers exist
             val noCustomer = emptyCustomers!!.searchInstrumentByName("No")
             assertTrue(noCustomer.contains("No customers"))
 
-            //Testing for when no instruments of given name exist
+            // Testing for when no instruments of given name exist
             val noInstrument = populatedCustomers!!.searchInstrumentByName("Bell")
             assertTrue(noInstrument.contains("No instrument"))
 
-            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            assertEquals(4, populatedCustomers!!.numberOfCustomers())
             val instrumentSearch = populatedCustomers!!.searchInstrumentByName("Stratocaster")
             println("------\n$instrumentSearch\n--------")
             assertTrue(instrumentSearch.contains("Fred"))
@@ -277,15 +275,15 @@ class CustomerAPITest {
 
         @Test
         fun searchInstrumentByTypeTest() {
-            //Testing when no customers exist
+            // Testing when no customers exist
             val noCustomer = emptyCustomers!!.searchInstrumentByType("No")
             assertTrue(noCustomer.contains("No customers"))
 
-            //Testing for when no instruments of given type exist
+            // Testing for when no instruments of given type exist
             val noInstrument = populatedCustomers!!.searchInstrumentByType("Bell")
             assertTrue(noInstrument.contains("No instrument"))
 
-            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            assertEquals(4, populatedCustomers!!.numberOfCustomers())
             val instrumentSearch = populatedCustomers!!.searchInstrumentByType("Guitar")
             println("------\n$instrumentSearch\n--------")
             assertTrue(instrumentSearch.contains("Fred"))
@@ -296,30 +294,30 @@ class CustomerAPITest {
 
         @Test
         fun searchInstrumentByPriceTest() {
-            //Testing when no customers exist
+            // Testing when no customers exist
             val noCustomer = emptyCustomers!!.searchInstrumentByPrice(245.32)
             assertTrue(noCustomer.contains("No customers"))
 
-            //Testing for when no instruments of given price exist
+            // Testing for when no instruments of given price exist
             val noInstrument = populatedCustomers!!.searchInstrumentByPrice(23432.34)
             assertTrue(noInstrument.contains("No instrument"))
 
-            //Testing for instruments in range of 10 below and above given price
-            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            // Testing for instruments in range of 10 below and above given price
+            assertEquals(4, populatedCustomers!!.numberOfCustomers())
             var instrumentSearch = populatedCustomers!!.searchInstrumentByPrice(490.0)
             assertTrue(instrumentSearch.contains("Joe"))
             assertTrue(instrumentSearch.contains("Snare"))
             assertTrue(instrumentSearch.contains("Drums"))
             assertFalse(instrumentSearch.contains("Guitar"))
 
-            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            assertEquals(4, populatedCustomers!!.numberOfCustomers())
             instrumentSearch = populatedCustomers!!.searchInstrumentByPrice(498.6)
             assertTrue(instrumentSearch.contains("Joe"))
             assertTrue(instrumentSearch.contains("Snare"))
             assertTrue(instrumentSearch.contains("Drums"))
             assertFalse(instrumentSearch.contains("Guitar"))
 
-            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            assertEquals(4, populatedCustomers!!.numberOfCustomers())
             instrumentSearch = populatedCustomers!!.searchInstrumentByPrice(482.1)
             println("------\n$instrumentSearch\n--------")
             assertTrue(instrumentSearch.contains("Joe"))
@@ -330,24 +328,24 @@ class CustomerAPITest {
 
         @Test
         fun searchInstrumentByReviewTest() {
-            //Testing when no customers exist
+            // Testing when no customers exist
             val noCustomer = emptyCustomers!!.searchInstrumentByReview(34)
             assertTrue(noCustomer.contains("No customers"))
 
-            //Testing for when no instruments of given type exist
+            // Testing for when no instruments of given type exist
             val noInstrument = populatedCustomers!!.searchInstrumentByReview(78)
             assertTrue(noInstrument.contains("No instrument"))
 
-            //Testing returns instrument of same review
-            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            // Testing returns instrument of same review
+            assertEquals(4, populatedCustomers!!.numberOfCustomers())
             var instrumentSearch = populatedCustomers!!.searchInstrumentByReview(7)
             assertTrue(instrumentSearch.contains("Fred"))
             assertTrue(instrumentSearch.contains("Stratocaster"))
             assertTrue(instrumentSearch.contains("Guitar"))
             assertFalse(instrumentSearch.contains("Drums"))
 
-            //Testing for instruments of same review
-            val keys: Instrument = Instrument(293,"Fender", "Strings", 300.00, 1, true, 7, "09/08/23", 34)
+            // Testing for instruments of same review
+            val keys: Instrument = Instrument(293, "Fender", "Strings", 300.00, 1, true, 7, "09/08/23", 34)
             customerMike!!.create(keys)
             instrumentSearch = populatedCustomers!!.searchInstrumentByReview(7)
             println("------\n$instrumentSearch\n--------")
@@ -359,24 +357,24 @@ class CustomerAPITest {
 
         @Test
         fun searchInstrumentByDateTest() {
-            //Testing when no customers exist
+            // Testing when no customers exist
             val noCustomer = emptyCustomers!!.searchInstrumentByDate("Test")
             assertTrue(noCustomer.contains("No customers"))
 
-            //Testing for when no instruments of given type exist
+            // Testing for when no instruments of given type exist
             val noInstrument = populatedCustomers!!.searchInstrumentByDate("23423423")
             assertTrue(noInstrument.contains("No instrument"))
 
-            //Testing returns instrument of same review
-            assertEquals(4,populatedCustomers!!.numberOfCustomers())
+            // Testing returns instrument of same review
+            assertEquals(4, populatedCustomers!!.numberOfCustomers())
             var instrumentSearch = populatedCustomers!!.searchInstrumentByDate("03/02/22")
             assertTrue(instrumentSearch.contains("Fred"))
             assertTrue(instrumentSearch.contains("Stratocaster"))
             assertTrue(instrumentSearch.contains("Guitar"))
             assertFalse(instrumentSearch.contains("Drums"))
 
-            //Testing for instruments bought on same date
-            val keys: Instrument = Instrument(293,"Fender", "Strings", 300.00, 1, true, 7, "03/02/22", 34)
+            // Testing for instruments bought on same date
+            val keys: Instrument = Instrument(293, "Fender", "Strings", 300.00, 1, true, 7, "03/02/22", 34)
             customerMike!!.create(keys)
             instrumentSearch = populatedCustomers!!.searchInstrumentByDate("03/02/22")
             println("------\n$instrumentSearch\n--------")
@@ -385,19 +383,18 @@ class CustomerAPITest {
             assertTrue(instrumentSearch.contains("Strings"))
             assertFalse(instrumentSearch.contains("Drums"))
         }
-
     }
 
     @Nested
     inner class DeleteCustomer {
         @Test
         fun deleteTest() {
-            //deleting a customer that doesn't exist returns null
+            // deleting a customer that doesn't exist returns null
             assertNull(emptyCustomers!!.deleteCustomer(0))
             assertNull(populatedCustomers!!.deleteCustomer(-1))
             assertNull(populatedCustomers!!.deleteCustomer(8))
 
-            //Fred0, Joe1, Mary2, Mike3
+            // Fred0, Joe1, Mary2, Mike3
             assertEquals(4, populatedCustomers!!.numberOfCustomers())
             assertEquals(customerMike, populatedCustomers!!.deleteCustomer(3))
             assertEquals(3, populatedCustomers!!.numberOfCustomers())
@@ -406,25 +403,24 @@ class CustomerAPITest {
         }
     }
 
-
     @Nested
     inner class UpdateCustomer {
 
         @Test
         fun updateCustomerTest() {
-            //Cannot update customer that doesn't exist
-            assertFalse(populatedCustomers!!.updateCustomer(7, Customer(5,"James", "Galway", mutableSetOf(guitar),true,"Guitar")))
-            assertFalse(populatedCustomers!!.updateCustomer(-1, Customer(5,"James", "Galway", mutableSetOf(guitar),true,"Guitar")))
-            assertFalse(emptyCustomers!!.updateCustomer(0, Customer(5,"James", "Galway", mutableSetOf(guitar),true,"Guitar")))
+            // Cannot update customer that doesn't exist
+            assertFalse(populatedCustomers!!.updateCustomer(7, Customer(5, "James", "Galway", mutableSetOf(guitar), true, "Guitar")))
+            assertFalse(populatedCustomers!!.updateCustomer(-1, Customer(5, "James", "Galway", mutableSetOf(guitar), true, "Guitar")))
+            assertFalse(emptyCustomers!!.updateCustomer(0, Customer(5, "James", "Galway", mutableSetOf(guitar), true, "Guitar")))
 
-            //Checking customer exists and its properties are correct
+            // Checking customer exists and its properties are correct
             assertEquals(customerFred, populatedCustomers!!.findCustomer(0))
             assertEquals("Fred", populatedCustomers!!.findCustomer(0)!!.customerName)
             assertEquals("Waterford", populatedCustomers!!.findCustomer(0)!!.customerAddress)
             assertEquals(1, populatedCustomers!!.findCustomer(0)!!.customerID)
 
-            //Update customerFred with new info and ensure update successful
-            assertTrue(populatedCustomers!!.updateCustomer(0, Customer(9,"Tester","Wicklow", customerFred!!.itemsBought,true, "Drums")))
+            // Update customerFred with new info and ensure update successful
+            assertTrue(populatedCustomers!!.updateCustomer(0, Customer(9, "Tester", "Wicklow", customerFred!!.itemsBought, true, "Drums")))
             println("---------\n$customerFred\n------------")
             assertEquals("Tester", populatedCustomers!!.findCustomer(0)!!.customerName)
             assertEquals("Wicklow", populatedCustomers!!.findCustomer(0)!!.customerAddress)
@@ -432,22 +428,20 @@ class CustomerAPITest {
         }
 
         @Test
-        fun updateStatusTest(){
-            //Cannot upgrade status of customer that doesn't exist
+        fun updateStatusTest() {
+            // Cannot upgrade status of customer that doesn't exist
             assertFalse(populatedCustomers!!.updateStatus(79))
             assertFalse(populatedCustomers!!.updateStatus(-10))
             assertFalse(emptyCustomers!!.updateStatus(0))
 
-            //Cannot upgrade status of customer already a vip
+            // Cannot upgrade status of customer already a vip
             assertEquals(customerFred!!.vipCustomer, true)
             assertFalse(populatedCustomers!!.updateStatus(0))
 
-            //Updating status makes customer VIP
+            // Updating status makes customer VIP
             assertEquals(customerMike!!.vipCustomer, false)
             assertTrue(populatedCustomers!!.updateStatus(3))
             assertEquals(customerMike!!.vipCustomer, true)
-
-
         }
     }
 
@@ -461,10 +455,11 @@ class CustomerAPITest {
             val loadedCustomers = CustomerAPI(XMLSerializer(File("customers.xml")))
             loadedCustomers.load()
 
-            assertEquals(0,storingCustomers.numberOfCustomers())
-            assertEquals(0,loadedCustomers.numberOfCustomers())
+            assertEquals(0, storingCustomers.numberOfCustomers())
+            assertEquals(0, loadedCustomers.numberOfCustomers())
             assertEquals(storingCustomers.numberOfCustomers(), loadedCustomers.numberOfCustomers())
         }
+
         @Test
         fun `saving and loading an empty collection in JSON doesn't crash app`() {
             val storingCustomers = CustomerAPI(JSONSerializer(File("customers.json")))
@@ -473,8 +468,8 @@ class CustomerAPITest {
             val loadedCustomers = CustomerAPI(JSONSerializer(File("customers.json")))
             loadedCustomers.load()
 
-            assertEquals(0,storingCustomers.numberOfCustomers())
-            assertEquals(0,loadedCustomers.numberOfCustomers())
+            assertEquals(0, storingCustomers.numberOfCustomers())
+            assertEquals(0, loadedCustomers.numberOfCustomers())
             assertEquals(storingCustomers.numberOfCustomers(), loadedCustomers.numberOfCustomers())
         }
 
@@ -486,80 +481,78 @@ class CustomerAPITest {
             val loadedCustomers = CustomerAPI(YAMLSerializer(File("customers.yaml")))
             loadedCustomers.load()
 
-            assertEquals(0,storingCustomers.numberOfCustomers())
-            assertEquals(0,loadedCustomers.numberOfCustomers())
+            assertEquals(0, storingCustomers.numberOfCustomers())
+            assertEquals(0, loadedCustomers.numberOfCustomers())
             assertEquals(storingCustomers.numberOfCustomers(), loadedCustomers.numberOfCustomers())
         }
 
-
         @Test
         fun `saving and loading Customers in XML doesn't lose data`() {
-            //Store 3 customers
+            // Store 3 customers
             val storingCustomers = CustomerAPI(XMLSerializer(File("customers.xml")))
             storingCustomers.create(customerMike!!)
             storingCustomers.create(customerJoe!!)
             storingCustomers.create(customerMary!!)
             storingCustomers.store()
 
-            //loading customers.xml into a different collection
+            // loading customers.xml into a different collection
             val loadedCustomers = CustomerAPI(XMLSerializer(File("customers.xml")))
             loadedCustomers.load()
 
-            assertEquals(3,storingCustomers.numberOfCustomers())
-            assertEquals(3,loadedCustomers.numberOfCustomers())
+            assertEquals(3, storingCustomers.numberOfCustomers())
+            assertEquals(3, loadedCustomers.numberOfCustomers())
             assertEquals(storingCustomers.numberOfCustomers(), loadedCustomers.numberOfCustomers())
             assertEquals(storingCustomers.findCustomer(0)!!.customerName, loadedCustomers.findCustomer(0)!!.customerName)
             assertEquals(storingCustomers.findCustomer(1)!!.customerName, loadedCustomers.findCustomer(1)!!.customerName)
             assertEquals(storingCustomers.findCustomer(2)!!.customerName, loadedCustomers.findCustomer(2)!!.customerName)
         }
+
         @Test
         fun `saving and loading Customers in JSON doesn't lose data`() {
-            //Store 3 customers
+            // Store 3 customers
             val storingCustomers = CustomerAPI(XMLSerializer(File("customers.json")))
             storingCustomers.create(customerMike!!)
             storingCustomers.create(customerJoe!!)
             storingCustomers.create(customerMary!!)
             storingCustomers.store()
 
-            //loading customers.xml into a different collection
+            // loading customers.xml into a different collection
             val loadedCustomers = CustomerAPI(XMLSerializer(File("customers.json")))
             loadedCustomers.load()
 
-            assertEquals(3,storingCustomers.numberOfCustomers())
-            assertEquals(3,loadedCustomers.numberOfCustomers())
+            assertEquals(3, storingCustomers.numberOfCustomers())
+            assertEquals(3, loadedCustomers.numberOfCustomers())
             assertEquals(storingCustomers.numberOfCustomers(), loadedCustomers.numberOfCustomers())
             assertEquals(storingCustomers.findCustomer(0)!!.customerName, loadedCustomers.findCustomer(0)!!.customerName)
             assertEquals(storingCustomers.findCustomer(1)!!.customerName, loadedCustomers.findCustomer(1)!!.customerName)
             assertEquals(storingCustomers.findCustomer(2)!!.customerName, loadedCustomers.findCustomer(2)!!.customerName)
         }
 
-
-        //YAML saves but doesn't load? Can't figure out why
+        // YAML saves but doesn't load? Can't figure out why
         @Test
         fun `saving and loading Customers in Yaml doesn't lose data`() {
-            //Store 3 customers
+            // Store 3 customers
             val storingCustomers = CustomerAPI(YAMLSerializer(File("customers.yaml")))
             storingCustomers.create(customerMike!!)
             storingCustomers.create(customerJoe!!)
             storingCustomers.create(customerMary!!)
             storingCustomers.store()
 
-            //loading customers.xml into a different collection
+            // loading customers.xml into a different collection
             val loadedCustomers = CustomerAPI(YAMLSerializer(File("customers.yaml")))
             loadedCustomers.load()
 
-
-            assertEquals(3,storingCustomers.numberOfCustomers())
-            assertEquals(3,loadedCustomers.numberOfCustomers())
+            assertEquals(3, storingCustomers.numberOfCustomers())
+            assertEquals(3, loadedCustomers.numberOfCustomers())
             assertEquals(storingCustomers.numberOfCustomers(), loadedCustomers.numberOfCustomers())
             assertEquals(storingCustomers.findCustomer(0)!!.customerName, loadedCustomers.findCustomer(0)!!.customerName)
             assertEquals(storingCustomers.findCustomer(1)!!.customerName, loadedCustomers.findCustomer(1)!!.customerName)
             assertEquals(storingCustomers.findCustomer(2)!!.customerName, loadedCustomers.findCustomer(2)!!.customerName)
-       }
+        }
 
         @Test
         fun changePersistenceTypeTest() {
-            //Testing serializer loads and stores customers
+            // Testing serializer loads and stores customers
 //            val storingCustomers = CustomerAPI(XMLSerializer(File("customers.xml")))
 //            storingCustomers.create(customerMike!!)
 //            storingCustomers.create(customerJoe!!)
@@ -579,11 +572,6 @@ class CustomerAPITest {
 //            storingCustomers.store()
 //            loadedCustomers.load()
 //            println(loadedCustomers.findCustomer(0))
-
-
         }
     }
-
-
-
 }
