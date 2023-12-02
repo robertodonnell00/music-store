@@ -3,15 +3,15 @@ package models
 import java.util.Date
 
 class Instrument(
-    var instrumentID: Int,
-    var instrumentName: String,
-    var instrumentType: String,
-    var price: Double,
-    var qauntityBought: Int,
+    var instrumentID: Int = 0,
+    var instrumentName: String = "",
+    var instrumentType: String = "",
+    var price: Double = 0.0,
+    var qauntityBought: Int =0,
     var isPaidFor: Boolean = true,
-    var instrumentReview: Int, // x out of 10
-    var dateReceived: String,
-    var customerBoughtID: Int
+    var instrumentReview: Int = 0, // x out of 10
+    var dateReceived: String = "",
+    var customerBoughtID: Int = 0
 ) {
     override fun toString(): String {
         return "InstrumentID: '$instrumentID'  Instrument Name: '$instrumentName'" +

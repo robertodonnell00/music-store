@@ -4,12 +4,12 @@ import persistence.Serializer
 
 
 class Customer(
-    var customerID: Int,
-    var customerName: String,
-    var customerAddress: String,
+    var customerID: Int = 0,
+    var customerName: String = "",
+    var customerAddress: String = "",
     var itemsBought: MutableSet<Instrument> = mutableSetOf(),
-    var vipCustomer: Boolean,
-    var preferredInstrument: String) {
+    var vipCustomer: Boolean = false,
+    var preferredInstrument: String = "") {
 
     override fun toString(): String {
         return "Customer ID: '$customerID'           Name: $customerName" +

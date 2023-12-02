@@ -4,6 +4,7 @@ import models.Customer
 import mu.KotlinLogging
 import persistence.JSONSerializer
 import persistence.XMLSerializer
+import persistence.YAMLSerializer
 import persistence.Serializer
 import utils.ScannerInput
 import utils.ScannerInput.readNextDouble
@@ -53,10 +54,14 @@ fun main(args: Array<String>) {
         do {
             when (val option = selectUserMenu()) {
                 1-> {customerAPI.changePersistenceType(JSONSerializer(File("customers.json")))
-                      runMainMenu()  }
+                    passCheck()
+                }
                 2-> {customerAPI.changePersistenceType((XMLSerializer(File("customers.xml"))))
-                    runMainMenu() }
-                3-> runMainMenu()
+                    passCheck()
+                }
+                3-> {customerAPI.changePersistenceType((YAMLSerializer(File("customers.yaml"))))
+                    passCheck()
+                }
                 0-> exitApp()
                 else -> println("Invalid option selected: $option")
             }
@@ -64,8 +69,36 @@ fun main(args: Array<String>) {
     }
 
 
+fun passMenu(): String {
+        print("""
+            >__________________________________
+            >|         MUSIC    STORE         |
+            >|--------------------------------|
+            >|   PLEASE   ENTER   PASSWORD    |
+            >|________________________________|
+            >|To escape (0)                   |
+            >|________________________________|
+            >|Enter Password : """.trimMargin(">"))
 
-    fun mainMenu(): Int {
+        return readLine()!!.toString()
+    }
+
+fun passCheck() {
+    var input: String
+    do {
+        input = passMenu()
+        when(input) {
+            "password"  -> runMainMenu()
+            "PASSWORD" -> runMainMenu()
+            "p" -> runMainMenu() //for testing
+            else -> println("Incorrect password, try again! \n Break out (0)")
+        }
+        println()
+    } while (input != "0")
+}
+
+
+fun mainMenu(): Int {
         return scannerInput.readNextInt(
             """
       > ----------------------------------
@@ -395,7 +428,7 @@ fun addCustomer() {
     val customerAddress = readNextLine("Enter Customer Address: ")
     println("Enter Customer VIP Status (true/false): ")
     val vipCustomer = readln().toBoolean()
-    val preferredInstrument = readNextLine("Enter preferred type of Instrument: ")
+    val preferredInstrument = selectInstrumentType()
 
     val isAdded = customerAPI.create(Customer(customerID = customerID,
         customerName= customerName, customerAddress= customerAddress,
@@ -411,7 +444,7 @@ fun addCustomer() {
 private fun chooseCustomer(): Customer? {
     listAllCustomers()
     if (customerAPI.numberOfCustomers() > 0){
-        val customer = customerAPI.findCustomer(readNextInt("\nEnter id of the customer: "))
+        val customer = customerAPI.findCustomer(readNextInt("\nEnter index of the customer: "))
         if (customer != null) return customer else {println("Customer ID invalid")}
     }
     return null
@@ -638,8 +671,8 @@ fun updateCustomer() {
             //val instrumentIndex = readNextInt("Enter index of instrument: ")
             //val itemsBought = instrumentAPI.getInstrument(instrumentIndex)
             println("Is customer VIP? (true/false)")
-            val customerVIP = readln().toBoolean()
-            val preferredInstrument = readNextLine("Enter the customer's preferred Instrument type: ")
+            val customerVIP = false
+            val preferredInstrument = selectInstrumentType()
             if (customerAPI.updateCustomer(indexToUpdate, Customer(customerID,customerName,customerAddress, mutableSetOf(), customerVIP,preferredInstrument))){
                 println("Update Successful")
             } else {
@@ -714,7 +747,7 @@ fun selectInstrumentType(): String {
     println("Which category does the Instrument fall under?")
     instrumentTypes.forEachIndexed {index, category ->
         println("${index + 1}) $category")}
-    println("8) Enter new category option")
+    println("9) Enter new category option")
 
     return when (val selectedOption = readNextInt("Enter the number for the category: ")) {
         in 1..instrumentTypes.size -> {
@@ -765,7 +798,7 @@ fun generateReceipt() {
         
     """.trimMargin(">"))
 
-    if ((totalPrice>500.0) and customer.vipCustomer == false){
+    if ((totalPrice>500.0) && !customer.vipCustomer){
         val updateStatus = readNextLine("Customer is eligible for VIP status \nUpdate status? (true/false): ")
         if(updateStatus == "true") {
             //What if customers ID is different than their index?
