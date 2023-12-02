@@ -2,8 +2,8 @@ package persistence
 
 import com.thoughtworks.xstream.XStream
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver
-import models.Instrument
 import models.Customer
+import models.Instrument
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
@@ -19,7 +19,6 @@ class JSONSerializer(private val file: File) : Serializer {
         inputStream.close()
         return obj
     }
-
 
     @Throws(Exception::class)
     override fun write(obj: Any?) {

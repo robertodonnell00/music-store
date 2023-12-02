@@ -1,12 +1,10 @@
 package persistence
 
-
-import models.Customer
+import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 import java.lang.Exception
-import org.yaml.snakeyaml.Yaml
 
 class YAMLSerializer(private val file: File) : Serializer {
 
@@ -14,7 +12,7 @@ class YAMLSerializer(private val file: File) : Serializer {
     override fun read(): Any {
         val yaml = Yaml()
         val read = FileReader(file)
-        val obj = yaml.load (read) as Any
+        val obj = yaml.load(read) as Any
         read.close()
         return obj
     }
