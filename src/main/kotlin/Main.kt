@@ -520,7 +520,6 @@ val numbers = arrayOf("1", "2", "3", "4","5","6","7","8","9","0")
  *
  * This function checks if the provided string contains any of the specified forbidden characters.
  * If the string contains any forbidden character, the function returns false; otherwise, it returns true.
- *
  * @param inputString The string to be validated.
  * @param forbiddenCharacters An array of strings representing forbidden characters.
  * @return `true` if the input string does not contain any forbidden characters, `false` otherwise.
