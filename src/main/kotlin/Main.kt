@@ -366,8 +366,8 @@ fun instrumentMenu(): Int {
       > |    1) Instrument List Menu     |
       > |    2) Instrument Search Menu   |
       > |    3) Add Instrument           |
-      > |    2) Update Instrument        |
-      > |    3) Delete Instrument        |
+      > |    4) Update Instrument        |
+      > |    5) Delete Instrument        |
       > ----------------------------------
       > |    0) Main Menu                |
       > ----------------------------------
@@ -514,18 +514,43 @@ fun load() {
 // CREATE
 
 
+val numbers = arrayOf("1", "2", "3", "4","5","6","7","8","9","0")
+/**
+ * Validates a given string against a set of forbidden characters.
+ *
+ * This function checks if the provided string contains any of the specified forbidden characters.
+ * If the string contains any forbidden character, the function returns false; otherwise, it returns true.
+ *
+ * @param inputString The string to be validated.
+ * @param forbiddenCharacters An array of strings representing forbidden characters.
+ * @return `true` if the input string does not contain any forbidden characters, `false` otherwise.
+ */
+fun validateName(a: String, b: Array<String>):Boolean {
+    b.forEach{number ->
+        if(a.contains(number))
+            return false
+    }
+    return true
+}
+
+
 /**
  * Adds a new customer to the application by gathering input from the user.
  * Prints success or failure messages based on the outcome.
  */
+
 fun addCustomer() {
-    println("Suggested Customer ID")
+    println("Suggested Customer ID:")
     val customerID = readNextInt("Suggested Customer ID: ${customerAPI.numberOfCustomers()} \nEnter Customer ID: ")
-    // customerAPI.numberOfCustomers()
-    val customerName = readNextLine("Enter Customer Name: ")
-    val customerAddress = readNextLine("Enter Customer Address: ")
-    println("Enter Customer VIP Status (true/false): ")
-    val vipCustomer = readln().toBoolean()
+    var customerName = readNextLine("Enter Customer Name: ")
+    while((!validateName(customerName,numbers)) || customerName.length > 15){
+        customerName = readNextLine("Invalid name, cannot have numbers or be greater than 15 characters\nTry again: ")
+    }
+    var customerAddress = readNextLine("Enter Customer Address: ")
+    while (customerAddress.length > 20){
+        customerAddress = readNextLine("Invalid address, cannot be longer than 20 characters\nTry again:")
+    }
+    val vipCustomer = false
     val preferredInstrument = selectInstrumentType()
 
     val isAdded = customerAPI.create(
@@ -583,16 +608,22 @@ fun addInstrumentToCustomer() {
     val customer: Customer? = chooseCustomer()
 
     if (customer != null) {
-        val instrumentID = readNextInt("Enter Instrument ID: ")
+        println("Suggested Customer ID:")
+        val instrumentID = readNextInt("Suggested Customer ID: ${customer.numberOfInstruments()} \nEnter Instrument ID: ")
         val instrumentName = readNextLine("Enter Instrument Name: ")
         val instrumentType = selectInstrumentType()
         val price = readNextDouble("Enter the price of the instrument: ")
         val quantityBought = readNextInt("Enter the quantity of instruments the customer bought: ")
         println("Did the customer pay for instrument: ")
         val isPaidFor = readln().toBoolean()
-        val instrumentReview = readNextInt("Enter the review for instrument: ")
-        val dateReceived = readNextLine("Enter the date the customer received instrument: ")
-
+        var instrumentReview = readNextInt("Enter the review for instrument: ")
+        while (instrumentReview < 0 || instrumentReview > 101){
+            instrumentReview = readNextInt("Invalid review, must be whole number between 0 and 100\nTry again: ")
+        }
+        var dateReceived = readNextLine("Enter the date the customer received instrument: ")
+        while (dateReceived.length > 10 ||(!dateReceived.contains("/"))) {
+            dateReceived = readNextLine("Invalid date received, please enter date in format (DD/MM/YYYY)\nTry again: ")
+        }
         val isAdded = customer.create(Instrument(instrumentID, instrumentName, instrumentType, price, quantityBought, isPaidFor, instrumentReview, dateReceived, customer.customerID))
         if (isAdded) {
             println("Added Successfully")
@@ -935,9 +966,6 @@ fun updateCustomer() {
             val customerID = readNextInt("Enter customer ID: ")
             val customerName = readNextLine("Enter customer name: ")
             val customerAddress = readNextLine("Enter customer address: ")
-            // val instrumentIndex = readNextInt("Enter index of instrument: ")
-            // val itemsBought = instrumentAPI.getInstrument(instrumentIndex)
-            // println("Is customer VIP? (true/false)")
             val customerVIP = false //should be false by default
             val preferredInstrument = selectInstrumentType()
             if (customerAPI.updateCustomer(indexToUpdate, Customer(customerID, customerName, customerAddress, mutableSetOf(), customerVIP, preferredInstrument))) {
