@@ -24,6 +24,10 @@ The Music Store App is a web application designed to manage customer information
 
 - **Security:** Light security was introduced as a safety measure for the store.
 
+- **Validation:** Some validation was introduced to minimise errors in data, such as: Can't have a number in customer name, customer name can't be longer than 15 characters, review scores can't be less than 0 or more than 100, etc.
+
+- **Customer Satisfaction:** Store's can now get the average review from all instruments sold. This will help the store to gather feedback.
+
 # Help Received
 
 Had trouble managing the Mutable Set of Instruments, received direction from my friend Padraig Crotty who is a Java Developer. He showed me how to cast into a Mutable set, eg:
