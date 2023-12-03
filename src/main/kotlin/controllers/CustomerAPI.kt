@@ -137,6 +137,10 @@ class CustomerAPI(private var serializerType: Serializer) {
         return customers[index]
     }
 
+    fun getAllCustomers(): ArrayList<Customer> {
+        return customers
+    }
+
     /**
      * Searches for customers by name and returns a formatted list.
      *

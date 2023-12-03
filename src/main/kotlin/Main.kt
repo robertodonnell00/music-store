@@ -184,6 +184,8 @@ fun customerMenu(): Int {
       > |    6) Delete a Customer        |
       > |    7) Calculate total paid by  |
       > |       Customer                 |
+      > |    8) Calculate General        |
+      > |       Customer Satisfaction    |
       > ----------------------------------
       > |    0) Main Menu                |
       > ----------------------------------
@@ -205,6 +207,7 @@ fun runCustomerMenu() {
             5 -> updateCustomer()
             6 -> deleteCustomer()
             7 -> generateReceipt()
+            8 -> calculateCustomerSatisfaction()
             0 -> break
             else -> println("Invalid option selected: $option")
         }
@@ -1121,6 +1124,7 @@ fun generateReceipt() {
         >|  Instrument ID: ${instrument.instrumentID}          
         >|  Purchased On: ${instrument.dateReceived}          
         >|  Quantity: ${instrument.qauntityBought}            
+        >|  Review: ${instrument.instrumentReview}/100           
         >|  Price: €${instrument.price}                
         >----------------------------------
         >| Total for ${instrument.instrumentName}: €${df.format(instrument.price * instrument.qauntityBought)}                                
@@ -1149,4 +1153,29 @@ fun generateReceipt() {
             // customerAPI.updateStatus(customer.indexOf(customer))
         }
     }
+}
+
+fun calculateCustomerSatisfaction() {
+    var totalReview = 0
+    var averageReview = 0
+    for(customer in customerAPI.getAllCustomers()){
+        println("""
+                >----------------------------------           
+                >|  Customer: ${customer.customerName} ID: ${customer.customerID}          
+                    """.trimMargin(">") )
+        for(instrument in customer.itemsBought){
+            println("""
+                >----------------------------------           
+                >|  ${instrument.instrumentName} ID: ${instrument.instrumentID} Review: ${instrument.instrumentReview}          
+                    """.trimMargin(">") )
+            totalReview += instrument.instrumentReview
+        }
+        averageReview = totalReview/customer.numberOfInstruments()
+    }
+    println("""
+                >----------------------------------    
+                >|
+                >| Average review = ${averageReview/customerAPI.numberOfCustomers()}/100   
+                    """.trimMargin(">") )
+
 }
